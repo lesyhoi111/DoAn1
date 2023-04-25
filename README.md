@@ -1,15 +1,28 @@
-# Foobar
+# Name Project
+ỨNG DỤNG ĐI CHỢ TRỰC TUYẾN TÍCH HỢP GỢI Ý MÓN ĂN
 
-Foobar is a Python library for dealing with word pluralization.
 
-## Installation
+## Description
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Ứng dụng  [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
 pip install foobar
 ```
+### Built With
 
+This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
+* [![Next][Next.js]][Next-url]
+* [![React][React.js]][React-url]
+* [![Vue][Vue.js]][Vue-url]
+* [![Angular][Angular.io]][Angular-url]
+* [![Svelte][Svelte.dev]][Svelte-url]
+* [![Laravel][Laravel.com]][Laravel-url]
+* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+* [![JQuery][JQuery.com]][JQuery-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 ## Usage
 
 ```python
