@@ -8,10 +8,12 @@ Là ứng cross-platform, có thể sử dụng trên cả nền tảng android 
 ## developer
 
 * Lê Sỹ Hội - 20521356 - [contact](https://www.facebook.com/syhoi.le.9)
-    **Software engineering - University of Information Technology
+ 
+Software engineering - University of Information Technology
     
-* Lê Sỹ Hội - 20521356 - [contact](https://www.facebook.com/profile.php?id=100036802758523)
-    **Software engineering - University of Information Technology 
+* Nguyễn Viết Đức - 20521356 - [contact](https://www.facebook.com/profile.php?id=100036802758523)
+   
+Software engineering - University of Information Technology 
 
 ## Built With
 
