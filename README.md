@@ -24,6 +24,7 @@ The application uses several technologies to develop such as:
 * [FireBase](https://firebase.google.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Usage
 
 ```python
