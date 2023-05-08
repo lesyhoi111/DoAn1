@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button,Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList } from 'react-native';
+import { Button,Image, SafeAreaView, StyleSheet, Text , TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IngredientSale from './components/IngredientSale'
-import TapRecipe from './components/TapRecipe';
 import Search from './components/Search';
 import color from '../src/Color';
 import TapRecipeStore from './components/TapRecipeStore'
-import ItemIngredientSale from './components/ItemIngredientSale';
-
 function Store(props) {
 const [search,setSearch] = useState('')
 const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.toLowerCase()))

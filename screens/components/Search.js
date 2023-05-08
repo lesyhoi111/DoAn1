@@ -5,10 +5,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import color from '../../src/Color'
 
 function Search(props) {
-    const {onChangeText} = props
+    const {onChangeText,white} = props
 
     return (
-        <TouchableOpacity style={styles.container} >
+        <TouchableOpacity style={[styles.container,{backgroundColor:white==true?"white":color.backgroundMain,borderColor:white==true?color.main:"black"}]} >
             <Image source={require('../../src/images/search.png')} style={styles.img}  />
             <TextInput placeholder='Find a ingredient' style={styles.textInput} placeholderTextColor={color.placeHoder} onChangeText={onChangeText} autoFocus={props.openSearch}></TextInput>
             {/* <View style={styles.boxfilter}>
@@ -21,7 +21,6 @@ export default Search;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: color.backgroundMain,
         marginHorizontal:15,
         borderRadius:17,
         flexDirection:'row',

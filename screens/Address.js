@@ -24,7 +24,7 @@ function Address(props) {
             address: 'quảng nam',
             street: 'ql 1a',
             numphone: '01 213 21 32',
-            isdefault: true
+            isdefault: false
         },
     ];
 

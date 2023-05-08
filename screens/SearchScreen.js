@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon5 from 'react-native-vector-icons/FontAwesome5';
 import Search from './components/Search';
 import color from '../src/Color';
 import {DATA} from './components/DATA'
@@ -18,10 +19,10 @@ function SearchScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.btnBack}>
-                    <Icon name="arrow-left" size={25} color={color.backgroundMain} alignItems='center' />
+                    <Icon5 name="arrow-left" size={20} color={color.main} alignItems='center' />
                 </TouchableOpacity>
                 <View style={styles.SearchInput}>
-                    <Search onChangeText={(text) => { setSearch(text) }} openSearch={isSearch}></Search>
+                    <Search onChangeText={(text) => { setSearch(text) }} openSearch={isSearch} white={true}></Search>
                 </View>
             </View>
             <View style={styles.content}>
@@ -64,7 +65,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 10
+        marginBottom: 10,
+        //backgroundColor:color.main,
+        paddingVertical:10
     },
     btnBack: {
         padding: 10

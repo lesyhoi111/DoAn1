@@ -37,6 +37,7 @@ const ProductItemHz = (props) => {
                 sale: sale,
                 status: status,
                 price: price,
+                num: number
           })
         );}else{
             dispatch(

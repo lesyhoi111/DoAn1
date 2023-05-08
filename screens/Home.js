@@ -5,6 +5,7 @@ import IngredientSale from './components/IngredientSale'
 import TapRecipe from './components/TapRecipe'
 import SliderImage from './components/SliderImage'
 import Color from '../src/Color'
+import Lottie from 'lottie-react-native';
 function Home(props) {
     const {navigation,route}=props
     const {navigate,goBack}=navigation
@@ -12,16 +13,16 @@ function Home(props) {
         <ScrollView horizontal={false}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
-                <View style={{position:'absolute', height:110, width:110,borderRadius:100,backgroundColor:Color.main,right:-20,top:-45}}></View>
-                <View style={{position:'absolute', height:230, width:230,borderRadius:100,backgroundColor:Color.backgroundMain,bottom:-125,left:-60}}></View>
-                    <View style={{ marginVertical: 0,flex:4 , }}>
+                <Lottie source={require('../src/Lottie/home2.json')} autoPlay loop speed={1}  style={{position:'absolute', height:100, width:100,top:-10,right:-13}}/>
+                <Lottie source={require('../src/Lottie/home1.json')} autoPlay loop speed={1}  style={{position:'absolute', height:300, width:300,top:-45,left:-40}}/>
+                <View style={{ marginVertical: 0,flex:4 }}>
                         <Text style={styles.txtheader}>Xin chào!</Text>
                         <Text style={styles.txtheaderbottom}>Bạn muốn mua thực phẩm gì?</Text>
                     </View>
                     <View style={{ flex:1,flexDirection:'row', paddingRight:5, alignItems:'center' }}>
                         <View flex={1}></View>
                         <TouchableOpacity style={{}}>
-                            <Image source={require('../src/images/sale.png')} style={[styles.img, { borderWidth: 3, borderColor: Color.backgroundMain }]}></Image>
+                            <Image source={require('../src/images/sale.png')} style={styles.img}></Image>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -31,7 +32,7 @@ function Home(props) {
                 <SliderImage></SliderImage>
                 
                 </View>
-                    <Search></Search>   
+                    <Search white={false}></Search>   
                     <TouchableOpacity style={{ height:35,width:330,position:'absolute',left:15,top:213}} onPress={()=>navigate('SearchScreen')}>
                         </TouchableOpacity>      
                 <IngredientSale></IngredientSale>

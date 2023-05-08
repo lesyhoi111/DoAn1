@@ -4,10 +4,14 @@ import { Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { isValidEmail, isValidRePass } from '../utilies/Validatetions';
 import { isValidPass } from '../utilies/Validatetions';
-
+import Lottie from 'lottie-react-native';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 function Login(props) {
     const [keyBoardIsShow, setKeyBoardIsShow] = useState(false)
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         Keyboard.addListener(('keyboardDidShow'), () => setKeyBoardIsShow(true))
         Keyboard.addListener(('keyboardDidHide'), () => setKeyBoardIsShow(false))
@@ -24,6 +28,14 @@ function Login(props) {
 
     const {navigation,route}=props
     const {navigate,goBack}=navigation
+
+    const handleLogin=()=>{
+        setLoading(true);
+        setTimeout(() => {
+            navigate('UITab')
+            setLoading(false);
+          }, 1000);
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.top}>
@@ -54,9 +66,11 @@ function Login(props) {
                 <View style={{ height: 1, backgroundColor: '#5DCCF5', marginHorizontal: 20 }}></View>
                 <Text style={{ color: 'red', paddingLeft: 20, marginVertical: 7 }}>{errorPassword}</Text>
                 <View flex={1}></View>
-                <TouchableOpacity style={[styles.button, { backgroundColor: isValidOK() == true ? '#FA6D21' : '#5DCCF5' }]} disabled={isValidOK() == false} onPress={() => {navigate('UITab')}}>
+
+                <TouchableOpacity style={[styles.button, { backgroundColor: isValidOK() == true ? '#FA6D21' : '#5DCCF5' }]} disabled={isValidOK() == false} onPress={() => {handleLogin()}}>
                     <Text style={{ fontSize: 27, fontWeight: 'bold', color: 'white', marginVertical: 7 }}>Login</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={{ alignItems: 'center', marginVertical: 10 }} onPress={()=>{navigate('Register')}}>
                     <Text style={styles.text_center}>New user? Register now</Text>
                 </TouchableOpacity>
@@ -74,6 +88,10 @@ function Login(props) {
                     </View>
                 </View>
             }
+            {loading==true&&
+            <View style={{position:'absolute',height:height,width:width,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
+                <Lottie source={require('../src/Lottie/loading2.json')} autoPlay speed={1.5}/>
+            </View>}
         </SafeAreaView>
     );
 }

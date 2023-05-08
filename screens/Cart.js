@@ -16,7 +16,7 @@ const Cart = (props) => {
   //   }, 0);
   //   setTotalOfMoney(sum)
   // }, [])
-  const total = items.reduce((acc, item) => acc + item.sale, 0);
+  const total = items.reduce((acc, item) => acc + item.sale*item.num, 0);
 
 
   return (
@@ -68,7 +68,7 @@ const Cart = (props) => {
           <Text style={styles.money}>{total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
         </View>
         <View style={{flex: 1,alignItems:'center'}}>
-        <TouchableOpacity style={styles.btnAddToCart}>
+        <TouchableOpacity style={styles.btnAddToCart} onPress={()=>navigation.navigate('Order')}>
           <Text style={styles.btnText}>ĐẶT HÀNG</Text>
         </TouchableOpacity>
         </View>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 55,
-    backgroundColor: color.backgroundMain,
+    backgroundColor: color.main,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
