@@ -1,22 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { Text, FlatList, StyleSheet, SafeAreaView, View, ImageBackground, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Text, Animated, StyleSheet, SafeAreaView, View, ImageBackground, TextInput, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import ProductItemHz from './components/ProductItemHz';
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { SwipeListView } from 'react-native-swipe-list-view';
 import { DATA } from './components/DATA';
 import color from '../src/Color';
 const Cart = (props) => {
   const { navigation } = props
   const [totalOfMoney, setTotalOfMoney] = useState(8000000)
   const items = useSelector(state => state.cart.items);
-  // useEffect(() => {
-  //   const sum = DATA.reduce((accumulator, currentValue) => {
-  //     return accumulator + currentValue.price;
-  //   }, 0);
-  //   setTotalOfMoney(sum)
-  // }, [])
+  
   const total = items.reduce((acc, item) => acc + item.sale*item.num, 0);
+
+
+  const HiddenItemWithActions = props => {
+    const {
+      swipeAnimatedValue
+    } = props;
+
+    return (
+      <Animated.View style={styles.rowBack}>
+              
+            <TouchableOpacity
+              style={[styles.backRightBtn, styles.backRightBtnRight]}
+              onPress={()=>{}}>
+              <Animated.View
+                style={
+                  {alignItems:'center',
+                    transform: [
+                      {
+                        scale: swipeAnimatedValue.interpolate({
+                          inputRange: [-75, 0],
+                          outputRange: [1,0],
+                          extrapolate: 'clamp',
+                        }),
+                      },
+                    ],
+                  }
+                }>
+                 <AntDesign name="delete" style={{fontSize:23,color:'white',marginBottom:5}}></AntDesign>
+                            <Text style={styles.backTextWhite}>Xóa</Text>
+              </Animated.View>
+            </TouchableOpacity>
+      </Animated.View>
+    );
+  };
+
+  const renderHiddenItem = (data, rowMap) => {
+
+    return (
+      <HiddenItemWithActions
+        data={data}
+        rowMap={rowMap}
+        onClose={() => closeRow(rowMap, data.item.key)}
+        onDelete={() => deleteRow(rowMap, data.item.key)}
+      />
+    );
+  };
 
 
   return (
@@ -30,11 +72,17 @@ const Cart = (props) => {
         <View></View>
       </View>
       <View style={styles.content}>
-        <View style={styles.FlatList}>
+        <View style={styles.flatList}>
           {DATA.length>0 ?
-          <FlatList
+          <SwipeListView
             data={DATA}
             showsVerticalScrollIndicator={false}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-75}
+            disableRightSwipe
+            previewRowKey={'0'}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
             renderItem={({ item }) => <ProductItemHz
               onPress={() => navigation.navigate('ProductDetail', {
                 discount: item.percent,
@@ -78,6 +126,37 @@ const Cart = (props) => {
 };
 
 const styles = StyleSheet.create({
+  flatList:{
+    backgroundColor:'white'
+  },
+
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+    height:'100%'
+    //marginTop:15,
+},
+backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+},
+backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+},
+backTextWhite: {
+  color: 'white',
+  fontWeight:'500',
+  fontSize:20
+},
   container: {
     flex: 1,
   },
@@ -117,6 +196,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333'
   },
+  
   money: {
     fontSize: 22,
     fontWeight: 'bold',

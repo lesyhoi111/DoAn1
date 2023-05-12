@@ -157,7 +157,7 @@ export default function BoardingSlider(props) {
               <Text style={{fontSize:20,color:'black',fontWeight:'bold',alignSelf:'center',textAlign:'center'}}>{item.title}</Text>
               {index==3
               ?
-              <View>
+              <View style={{flexDirection:'column-reverse'}}>
               <TouchableOpacity style={styles.button} onPress={()=>props.navigation.navigate("Login")}>
                 <Text style={styles.txtBT}>Người dùng</Text>
               </TouchableOpacity>
@@ -194,9 +194,9 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf:'center',
-    marginTop:15,
-    paddingVertical:7,
-    width:200,
+    marginTop:10,
+    paddingVertical:10,
+    width:220,
     borderRadius:10,
     backgroundColor:'white',
     alignItems:'center'

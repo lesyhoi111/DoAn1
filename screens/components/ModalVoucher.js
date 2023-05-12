@@ -76,6 +76,7 @@ const ModalVoucher = ({ visible, onClose, onTrue }) => {
       transparent={true}
       visible={visible} onRequestClose={onClose}>
       <View style={styles.backgroundView}>
+      <TouchableOpacity style={{flex:1}} onPress={()=>{onClose()}}></TouchableOpacity>
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <Text style={styles.txtTitle}>Chọn mã giảm giá</Text>
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Color.backgroundMain,
     alignItems: 'center',
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   txtBT: {
     color: Color.main,

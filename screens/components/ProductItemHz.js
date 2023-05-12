@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Alert } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Animated } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from "react-redux";
 import { addCart,deleteCart } from "./Redux/CartSlice";
 import CheckBox from '@react-native-community/checkbox';
 import Color from "../../src/Color";
+import { SwipeListView } from 'react-native-swipe-list-view';
 const { width } = Dimensions.get('window');
 const ProductItemHz = (props) => {
     const { discount, name, price, sale, uri, onPress, status,id } = props
@@ -44,7 +45,26 @@ const ProductItemHz = (props) => {
                 deleteCart(id))
         }
       };
+
+      const leftSwipe = (progress, dragX) => {
+        const scale = dragX.interpolate({
+          inputRange: [0, 100],
+          outputRange: [0, 1],
+          extrapolate: 'clamp',
+        });
+        return (
+          <TouchableOpacity  activeOpacity={0.6}>
+            <View style={styles.deleteBox}>
+              <Animated.Text style={{transform: [{scale: scale}]}}>
+                Delete
+              </Animated.Text>
+            </View>
+          </TouchableOpacity>
+        );
+      };
+    
     return (
+        // <Swipeable renderLeftActions={leftSwipe}>
         <View style={styles.container}>
             <TouchableOpacity
                 onPress={onPress}
@@ -102,15 +122,18 @@ const ProductItemHz = (props) => {
                 </View>
             </TouchableOpacity>
         </View>
+        // </Swipeable>
     )
 }
 const styles = StyleSheet.create({
     container: {
-        width: (width - 30),
+        width: width,
         borderBottomWidth: 1,
         borderColor: Color.placeHoder,
-        marginTop: 15,
-        paddingBottom: 15
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingHorizontal:15,
+        backgroundColor:'white'
     },
     header: {
         flexDirection: "row",

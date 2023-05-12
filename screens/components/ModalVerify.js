@@ -22,9 +22,12 @@ const ModalVerify = ({ visible, onClose, password, onTrue }) => {
     transparent={true}
     visible={visible} onRequestClose={onClose}>
       <View style={styles.backgroundView}>
+      <TouchableOpacity style={{flex:1}} onPress={()=>{onClose()}}></TouchableOpacity>
         <View style={styles.modalContainer}>
-        <Text style={styles.txtTitle}>Mời nhập mật khẩu để lưu thay đổi!</Text>
+        <Text style={styles.txtTitle}>Xác thực mật khẩu!</Text>
+        <Text style={styles.txtTitle_min}>Nhập đúng mật khẩu để lưu những thay đổi</Text>
         <TextInput
+        secureTextEntry
           placeholder="Re-Password"
           value={pass}
           onChangeText={setPass}
@@ -53,34 +56,41 @@ const styles = StyleSheet.create({
     },
     modalContainer:{
         backgroundColor:'white',
-        height:230,
-        padding:15,
-        alignItems:'center'
+        height:260,
+        padding:10,
+        alignItems:'center',
+        borderTopLeftRadius:30,
+        borderTopRightRadius:30,
     },
     txtTitle:{
         color:'black',
+        fontSize:20,
+        fontWeight:'bold',
+    },
+    txtTitle_min: {
+      fontSize: 16,
+      marginBottom:10,
+  },
+    txtBT:{
+        color:'white',
         fontSize:18,
         fontWeight:'bold'
-    },
-    txtBT:{
-        color:Color.main,
-        fontSize:18,
-        fontWeight:'500'
     },
     txtInput:{
         fontSize:16,
         borderColor:Color.main,
         borderWidth:1,
         width:300,
-        marginVertical:10,
-        borderRadius:15
+        marginVertical:15,
+        borderRadius:15,
+        textAlign:'center'
     },
     button:{
-        backgroundColor:Color.backgroundDefault,
-        width:200,
+        backgroundColor:Color.main,
+        width:250,
         alignItems:'center',
-        borderRadius:15,
-        marginVertical:10,
-        paddingVertical:7
+        borderRadius:10,
+        marginTop:10,
+        paddingVertical:10
     },
 })

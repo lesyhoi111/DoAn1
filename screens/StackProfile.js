@@ -23,6 +23,7 @@ function StackProfile(props) {
                 <Stack.Screen name="EditAdress" component={EditAdress} />
                 <Stack.Screen name="History" component={History} />
                 <Stack.Screen name="Voucher" component={Voucher} />
+                
             </Stack.Navigator>
         
     )

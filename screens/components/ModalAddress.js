@@ -61,6 +61,7 @@ const ModalAddress = ({ visible, onClose, onTrue }) => {
             transparent={true}
             visible={visible} onRequestClose={onClose}>
             <View style={styles.backgroundView}>
+            <TouchableOpacity style={{flex:1}} onPress={()=>{onClose()}}></TouchableOpacity>
                 <View style={styles.modalContainer}>
                     <View style={styles.header}>
                         <Text style={styles.txtTitle}>Chọn địa chỉ nhận hàng</Text>
@@ -81,7 +82,7 @@ const ModalAddress = ({ visible, onClose, onTrue }) => {
                                     <TouchableOpacity
                                         onPress={() => { handleUpdate(add) }}//navigation.navigate("EditAddress")
                                     >
-                                        <Text style={{ fontSize: 18, fontWeight: '500', color: Color.main }}>Chọn</Text>
+                                        <Text style={{ fontSize: 17, fontWeight: '500', color: Color.main }}>Chọn</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={{ fontSize: 16, fontWeight: '400', paddingHorizontal: 10 }} numberOfLines={1} ellipsizeMode={'tail'}>{add.street}</Text>
@@ -108,11 +109,12 @@ const styles = StyleSheet.create({
     modalContainer: {
         backgroundColor: 'white',
         height: 350,
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     txtTitle: {
         color: 'black',
-        fontSize: 18,
+        fontSize: 21,
         fontWeight: 'bold',
 
     },
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: Color.backgroundMain,
         alignItems: 'center',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     txtBT: {
         color: Color.main,
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     },
     BT_exit: {
         position: 'absolute',
-        top: 10,
-        right: 10
+        top: 12,
+        right: 15
     },
 })

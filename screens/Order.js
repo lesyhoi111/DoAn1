@@ -8,7 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ModalAddress from './components/ModalAddress';
 import ModalVoucher from './components/ModalVoucher';
 import Color from '../src/Color';
-import { color } from 'react-native-elements/dist/helpers';
 import { useSelector } from "react-redux";
 let itemAddress;
 let itemVoucher;
