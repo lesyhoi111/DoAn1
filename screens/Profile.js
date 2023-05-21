@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Lottie from 'lottie-react-native';
 import Color from '../src/Color'
+import { auth, createUserWithEmailAndPassword, collection, addDoc, db } from '../firebase/firebase'
 const { width, height } = Dimensions.get('window');
 function Profile(props) {
     const {navigation,route}=props
@@ -88,7 +89,9 @@ function Profile(props) {
                         </View>
                         <Icon name='chevron-right' size={20} color={'#a9a9a9'}></Icon>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: 'row',padding:20,paddingTop:0}}>
+                    <TouchableOpacity
+                    onPress={()=>{auth.signOut(); navigation.navigate('Login')}}
+                    style={{ flexDirection: 'row',padding:20,paddingTop:0}}>
                         <MaterialCommunityIcons name='logout' size={25} color={'red'}></MaterialCommunityIcons>
                         <View style={{ flex: 1,paddingLeft:15  }}>
                             <Text style={{ color: 'red', fontSize: 20, fontWeight: '500'}}>Log out</Text>

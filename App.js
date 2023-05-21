@@ -14,7 +14,6 @@ import Order from './screens/Order'
 import History from './screens/History'
 import store from "./screens/components/Redux/Store";
 import { Provider } from "react-redux";
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 function App(props) {
