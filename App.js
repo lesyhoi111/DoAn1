@@ -18,7 +18,6 @@ import { collection, query, where, getDocs, orderBy, limit } from "firebase/fire
 import { db } from './firebase/index'
 import store from "./screens/components/Redux/Store";
 import { Provider } from "react-redux";
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 let listdata=[];

@@ -1,9 +1,7 @@
-import  React,{useState,useRef} from 'react';
+import  React,{useState,useRef, useEffect} from 'react';
 import { StatusBar, Animated, Text, Image, View, StyleSheet, Dimensions, FlatList,TouchableOpacity } from 'react-native';
 const {width, height} = Dimensions.get('screen');
-import {db} from '../firebase/index'
-import { collection, query, where, getDocs,orderBy  } from "firebase/firestore"; 
-import { async } from '@firebase/util';
+import {auth, onAuthStateChanged } from '../firebase/firebase'
 
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
@@ -36,6 +34,7 @@ const DATA = [
     image: require('../src/images/wellcome.gif')
   }
 ]
+
 const Indicator=({scrollX})=>{
   return <View style={{position:'absolute', bottom:50,flexDirection:'row'}}>
     {DATA.map((_,i)=>{
@@ -117,6 +116,7 @@ const Backdrop=({scrollX})=>{
     />);
 };
 export default function BoardingSlider(props) {
+  const {navigation} = props
   const scrollX=React.useRef(new Animated.Value(0)).current;
   const handleSkip = () => {
     setSkipPressed(true);
@@ -127,20 +127,20 @@ export default function BoardingSlider(props) {
   const flatListRef = useRef(null);
   const [skipPressed, setSkipPressed] = useState(false);
 
-  const [listdata,setListdata]=useState([])
-  const get= async()=>{
-//     const querySnapshot = await getDocs(collection(db, "THUCPHAM"));
-// querySnapshot.forEach((doc) => {
-//   const item=doc.data()
-//   console.log(`${doc.id} => ${item.giagoc}`);
-// });
-const q = query(collection(db, "THUCPHAM"), where("giamgia", ">", 0));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            // setListdata([...listdata,{id:doc.id,...doc.data()}])
-            console.log(doc.data().ten)
-          });
-  }
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = user.uid;
+        navigation.navigate('UITab')
+
+        // ...
+      } else {
+        console.log('log out')
+      }
+    });
+  },[navigation])
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -189,9 +189,7 @@ const q = query(collection(db, "THUCPHAM"), where("giamgia", ">", 0));
               <TouchableOpacity style={[styles.button,{alignSelf:'flex-end',width:100,position:'absolute',top:90}]} onPress={handleSkip}>
     <Text style={styles.txtBT}>Bỏ qua</Text>
   </TouchableOpacity>
-  <TouchableOpacity style={[styles.button,{alignSelf:'flex-start',width:100,position:'absolute',top:90}]} onPress={()=>get()}>
-    <Text style={styles.txtBT}>test</Text>
-  </TouchableOpacity>
+ 
  
               </View>
               }
