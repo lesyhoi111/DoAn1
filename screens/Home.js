@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, VirtualizedList, ScrollView, Image } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, VirtualizedList, ScrollView, Image } from 'react-native';
 import Search from './components/Search'
 import IngredientSale from './components/IngredientSale'
 import TapRecipe from './components/TapRecipe'
 import SliderImage from './components/SliderImage'
 import Color from '../src/Color'
 import Lottie from 'lottie-react-native';
+const { width, height } = Dimensions.get('window');
 function Home(props) {
     const {navigation,route}=props
     const {navigate,goBack}=navigation
+    const [loading, setLoading] = useState(false)
+   
     return (
         <ScrollView horizontal={false}>
             <SafeAreaView style={styles.container}>
@@ -37,6 +40,10 @@ function Home(props) {
                         </TouchableOpacity>      
                 <IngredientSale></IngredientSale>
                 <TapRecipe></TapRecipe>
+
+            {/* <View style={{position:'absolute',height:height,width:width,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
+                <Lottie source={require('../src/Lottie/loading2.json')} autoPlay speed={1.5}/>
+            </View>} */}
             </SafeAreaView>
         </ScrollView>
      

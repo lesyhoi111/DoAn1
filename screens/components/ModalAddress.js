@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { updateAdd } from "./Redux/AddressSlice";
 import Lottie from 'lottie-react-native';
 
-const ModalAddress = ({ visible, onClose, onTrue }) => {
+const ModalAddress = ({ visible, onClose, onTrue,listAddres }) => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -42,10 +42,10 @@ const ModalAddress = ({ visible, onClose, onTrue }) => {
         await dispatch(
             updateAdd({
                 id: item.id,
-                name: item.name,
-                address: item.address,
-                street: item.street,
-                numphone: item.numphone,
+                tennguoinhan: item.tennguoinhan,
+                diachi: item.diachi,
+                motachitiet: item.motachitiet,
+                sdt: item.sdt,
             })
         )
         setTimeout(() => {
@@ -71,13 +71,13 @@ const ModalAddress = ({ visible, onClose, onTrue }) => {
                     </View>
                         
                     <ScrollView style={{ width: '100%' }}>
-                        {addres.map((add, index) => (
+                        {listAddres.map((add, index) => (
                             <View key={index} style={{ backgroundColor: 'white', paddingHorizontal: 10, paddingTop: 10 }}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontSize: 16, color: 'black', fontWeight: '400' }}>{add.name}</Text>
-                                        <View style={{ width: 1.5, backgroundColor: '#d0d7de', marginHorizontal: 10 }}></View>
-                                        <Text style={{ fontSize: 16, fontWeight: '400' }} numberOfLines={1} ellipsizeMode={'tail'}>{add.numphone}</Text>
+                                        <Text style={{ fontSize: 17, color: 'black', fontWeight: '400' }}>{add.tennguoinhan}</Text>
+                                        <View style={{ width: 1.5, backgroundColor: 'black', marginHorizontal: 10,marginVertical:2 }}></View>
+                                        <Text style={{ fontSize: 17, fontWeight: '400',color:'black' }} numberOfLines={1} ellipsizeMode={'tail'}>{add.sdt}</Text>
                                     </View>
                                     <TouchableOpacity
                                         onPress={() => { handleUpdate(add) }}//navigation.navigate("EditAddress")
@@ -85,8 +85,8 @@ const ModalAddress = ({ visible, onClose, onTrue }) => {
                                         <Text style={{ fontSize: 17, fontWeight: '500', color: Color.main }}>Chọn</Text>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={{ fontSize: 16, fontWeight: '400', paddingHorizontal: 10 }} numberOfLines={1} ellipsizeMode={'tail'}>{add.street}</Text>
-                                <Text style={{ fontSize: 16, fontWeight: '400', paddingHorizontal: 10 }} numberOfLines={1} ellipsizeMode={'tail'}>{add.address}</Text>
+                                <Text style={{ fontSize: 16, fontWeight: '400', paddingHorizontal: 10 }} numberOfLines={1} ellipsizeMode={'tail'}>{add.motachitiet}</Text>
+                                <Text style={{ fontSize: 16, fontWeight: '400', paddingHorizontal: 10 }} numberOfLines={1} ellipsizeMode={'tail'}>{add.diachi}</Text>
                                 <View style={{ height: 1, backgroundColor: 'black', marginVertical: 15 }}></View>
                             </View>
                         ))}

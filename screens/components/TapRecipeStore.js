@@ -7,6 +7,7 @@ import { DATA } from './DATA';
 import ItemIngredientSale from './ItemIngredientSale';
 import { SafeAreaView } from 'react-native-safe-area-context';
 function TapRecipe(props) {
+    const { navigation } = props
     const [tabSelect, setTabSelect] = useState(0);
 
     return (
@@ -27,7 +28,13 @@ function TapRecipe(props) {
                 showsVerticalScrollIndicator={false}
                 data={DATA}
                 numColumns={2}
-                renderItem={({ item }) => <ItemIngredientSale source={item.image} title={item.name} percent={item.percent} status={item.status} starpoint={item.starpoint} price={item.price} promotion={item.promotion} short={false}></ItemIngredientSale>}
+                renderItem={({ item }) => <ItemIngredientSale item={item} short={false}
+                onPress={() => navigation.navigate('ProductDetail',
+                    {
+                        itemDetail: item,
+                        shopOfPro: {}
+                    }
+                )}></ItemIngredientSale>}
                 keyExtractor={item => item.id}
             ></FlatList>
             </View>

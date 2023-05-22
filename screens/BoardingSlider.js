@@ -1,6 +1,9 @@
 import  React,{useState,useRef} from 'react';
 import { StatusBar, Animated, Text, Image, View, StyleSheet, Dimensions, FlatList,TouchableOpacity } from 'react-native';
 const {width, height} = Dimensions.get('screen');
+import {db} from '../firebase/index'
+import { collection, query, where, getDocs,orderBy  } from "firebase/firestore"; 
+import { async } from '@firebase/util';
 
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
@@ -123,6 +126,21 @@ export default function BoardingSlider(props) {
   };
   const flatListRef = useRef(null);
   const [skipPressed, setSkipPressed] = useState(false);
+
+  const [listdata,setListdata]=useState([])
+  const get= async()=>{
+//     const querySnapshot = await getDocs(collection(db, "THUCPHAM"));
+// querySnapshot.forEach((doc) => {
+//   const item=doc.data()
+//   console.log(`${doc.id} => ${item.giagoc}`);
+// });
+const q = query(collection(db, "THUCPHAM"), where("giamgia", ">", 0));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            // setListdata([...listdata,{id:doc.id,...doc.data()}])
+            console.log(doc.data().ten)
+          });
+  }
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -171,6 +189,10 @@ export default function BoardingSlider(props) {
               <TouchableOpacity style={[styles.button,{alignSelf:'flex-end',width:100,position:'absolute',top:90}]} onPress={handleSkip}>
     <Text style={styles.txtBT}>Bỏ qua</Text>
   </TouchableOpacity>
+  <TouchableOpacity style={[styles.button,{alignSelf:'flex-start',width:100,position:'absolute',top:90}]} onPress={()=>get()}>
+    <Text style={styles.txtBT}>test</Text>
+  </TouchableOpacity>
+ 
               </View>
               }
             </View>

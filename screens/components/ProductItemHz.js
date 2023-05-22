@@ -9,8 +9,8 @@ import Color from "../../src/Color";
 import { SwipeListView } from 'react-native-swipe-list-view';
 const { width } = Dimensions.get('window');
 const ProductItemHz = (props) => {
-    const { discount, name, price, sale, uri, onPress, status,id } = props
-    const [number, setNumber] = useState(1)
+    const { item, onPress, shop,num } = props
+    const [number, setNumber] = useState(num)
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const handleNumberPlus = () => {
         setNumber(number + 1)
@@ -31,18 +31,20 @@ const ProductItemHz = (props) => {
         if(valueCheck){
         dispatch(
             addCart({
-                idCart: id,
-                name: name,
-                image: uri,
-                percent: discount,
-                sale: sale,
-                status: status,
-                price: price,
+                // idCart: id,
+                // name: name,
+                // image: uri,
+                // percent: discount,
+                // sale: sale,
+                // status: status,
+                // price: price,
+                // num: number
+                item:item,
                 num: number
           })
         );}else{
             dispatch(
-                deleteCart(id))
+                deleteCart(item.id))
         }
       };
 
@@ -72,7 +74,7 @@ const ProductItemHz = (props) => {
                 <View style={styles.header}>
                     <Icon name='store' style={{ fontSize: 20, color: 'black', marginRight: 10 }}></Icon>
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.NameShop}>Tên của shop</Text>
+                        <Text style={styles.NameShop}>{shop.ten}</Text>
                     </View>
                     <View style={{
                         justifyContent: "center"
@@ -87,22 +89,23 @@ const ProductItemHz = (props) => {
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.leftPath}>
-                        <Text style={styles.discount}>{discount}</Text>
+                        {item.giamgia>0 &&
+                        <Text style={styles.discount}>{item.giamgia}%</Text>}
                         <Image
                             style={styles.img}
-                            source={{ uri: uri }}
+                            source={{ uri: item.image }}
                         />
                     </View>
                     <View style={styles.rightPath}>
-                        <Text numberOfLines={1} style={styles.name}>{name}</Text>
+                        <Text numberOfLines={1} style={styles.name}>{item.ten}</Text>
                         <View style={styles.status}>
-                            <FontAwesome name='circle' style={{ color: status == 'Available' ? 'green' : (status == 'Sold-out' ? 'red' : 'orange') }}></FontAwesome>
-                            <Text style={{ color: status == 'Available' ? 'green' : (status == 'Sold-out' ? 'red' : 'orange'), marginLeft: 5, fontSize: 15 }}>{status} </Text>
+                            <FontAwesome name='circle' style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange') }}></FontAwesome>
+                            <Text style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange'), marginLeft: 5, fontSize: 15 }}>{item.trangthai} </Text>
                         </View>
                         <View style={styles.money}>
                             <View>
-                                <Text style={styles.price}>{sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
-                                <Text style={styles.sale}>{price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                                <Text style={styles.price}>{(item.giagoc*(100-item.giamgia)/100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                                <Text style={styles.sale}>{item.giagoc.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                             </View>
                             <View style={styles.ChangeNumber}>
                                 <TouchableOpacity

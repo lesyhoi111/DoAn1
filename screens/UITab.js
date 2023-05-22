@@ -1,22 +1,41 @@
-import React from 'react';
+import React,{ createContext, useState,useEffect }  from 'react';
 import { Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Register from './Register'
-import Login from './Login'
+import { collection, query, where, getDocs,orderBy,limit  }  from "firebase/firestore";
+import {db} from '../firebase/index'
 import Home from './Home'
 import Cart from './Cart'
-import Store from './Store'
-import ProductDetail from './ProductDetail'
 import SearchScreen from './SearchScreen'
 import StackProfile from './StackProfile'
 import Color from '../src/Color' 
 
 const Tab = createBottomTabNavigator();
+// export const MyContext = createContext();
 
 function UITab() {
+//   const [listdata, setListdata] = useState([]);
+//   useEffect(()=>{
+//     getData();
+// },[])
+// const getData= async()=>{
+//     console.log("getdata ")
+//     // setLoading(true)
+    
+//     const q = query(collection(db, "THUCPHAM"),
+//       );
+//       const querySnapshot = await getDocs(q);
+//       const results = [];
+//       querySnapshot.forEach((doc) => {
+//         results.push({id:doc.id,...doc.data()});
+//       });
+//       setListdata(results)
+//       console.log(listdata)
+      
+// };
   return (
+    // <MyContext.Provider value={{ listdata, setListdata }}>
     <Tab.Navigator initialRouteName="Home"  screenOptions={{
         tabBarShowLabel:false,
         headerShown:false,
@@ -54,6 +73,7 @@ function UITab() {
           ),
         }}/>
     </Tab.Navigator>
+    // </MyContext.Provider>
   );
 }
 export default UITab;

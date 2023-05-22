@@ -9,6 +9,8 @@ import ModalAddress from './components/ModalAddress';
 import ModalVoucher from './components/ModalVoucher';
 import Color from '../src/Color';
 import { useSelector } from "react-redux";
+import { collection, query, documentId, getDocs, doc, where } from "firebase/firestore";
+import { db } from '../firebase/index'
 let itemAddress;
 let itemVoucher;
 const Order = (props) => {
@@ -17,15 +19,38 @@ const Order = (props) => {
     const [visible, setVisible] = useState(false);
     const [isloading, setIsloading] = useState(false);
     const [visibleVoucher, setVisibleVoucher] = useState(false);
+    const [listAdd, setListAdd] = useState([]);
+    useEffect(()=>{
+        getlistAdd();
+    },[])
+
+    const getlistAdd = async () => {
+        try {
+          console.log("getlistAdd1")
+          const khachhangDocRef = doc(db, "KHACHHANG", "R3XHZJR4TzNnEMm7ldOX");
+          const giohangCollectionRef = collection(khachhangDocRef, "DIACHIGIAOHANG");
+          const querySnapshot = await getDocs(giohangCollectionRef);
+          const result = await querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setListAdd(result);
+          console.log("getlistmatp")
+        } catch (error) {
+          console.error(error)
+        }
+    
+      }
+      
     //redux address
     itemAddress = useSelector(state => state.address);
     //redux item foods
     const itemFood = useSelector(state => state.cart.items);
-    const total = itemFood.reduce((acc, item) => acc + item.sale, 0);
+    const total = itemFood.reduce((acc, item) => acc + ((item.product.giagoc*(100-item.product.giamgia)/100)*item.num), 0);
 
     itemVoucher=useSelector(state => state.cart.voucher);
 
-    const [addressSelect, setAddressSelect] = useState(itemAddress);
+    const [addressSelect, setAddressSelect] = useState();
     const [voucherSelect, setVoucherSelect] = useState(itemVoucher);
 
     const updateAdd=(itemAddress)=>{
@@ -35,6 +60,7 @@ const Order = (props) => {
         setVoucherSelect(itemVoucher)
     }
 
+    
     const Item = (item,index) => {
         return (
             <View style={styles.boxItem} key={index}>
@@ -42,15 +68,15 @@ const Order = (props) => {
                     <Icon name="trash-alt" style={{ fontSize: 22 }}></Icon>
                 </TouchableOpacity>
                 <View style={{ flex: 0.87 }}>
-                    <Text style={styles.txt_header} numberOfLines={2} ellipsizeMode={'tail'}>{item.name}</Text>
+                    <Text style={styles.txt_header} numberOfLines={2} ellipsizeMode={'tail'}>{item.product.ten}</Text>
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={{}}>{(item.sale).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                        <Text style={{}}>{(item.product.giagoc*(100-item.product.giamgia)/100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                         <View flex={1}></View>
                         <Text>x{item.num}</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
                         <View flex={1}></View>
-                        <Text style={{ alignSelf: 'flex-end', color: 'red', fontWeight: '500' }}>={(item.sale*item.num).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                        <Text style={{ alignSelf: 'flex-end', color: 'red', fontWeight: '500' }}>={((item.product.giagoc*(100-item.product.giamgia)/100)*item.num).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                     </View>
 
                 </View>
@@ -70,6 +96,7 @@ const Order = (props) => {
             </View>
             <ModalAddress
             visible={visible}
+            listAddres={listAdd}
             onClose={() => setVisible(false)}
             onTrue={()=>{updateAdd(itemAddress)}}
         />
@@ -84,18 +111,29 @@ const Order = (props) => {
                         <View style={{flex:0.05}}>
                         <MaterialIcons name="location-pin" style={{ color: 'black', fontSize: 20 }}></MaterialIcons>
                         </View>
+                        {addressSelect?
                         <View style={{ marginLeft: 5,flex:0.85 }}>
                             <Text style={styles.txt_Location}>Địa chỉ nhận hàng</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.txt_Location}>{addressSelect.name}</Text>
+                                <Text style={styles.txt_Location}>{addressSelect.tennguoinhan}</Text>
                                 <View style={{ width: 1.5, backgroundColor: 'black', marginHorizontal: 10, marginVertical: 3 }}></View>
-                                <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.numphone}</Text>
+                                <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.sdt}</Text>
                             </View>
-                            <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.street}</Text>
-                            <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.address}</Text>
+                            <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.motachitiet}</Text>
+                            <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}>{addressSelect.diachi}</Text>
                         </View>
+                        :
+                        <View style={{ marginLeft: 5,flex:0.85 }}>
+                            <Text style={styles.txt_Location}>Địa chỉ nhận hàng?</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.txt_Location}></Text>
+                                <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}></Text>
+                            </View>
+                            <Text style={[styles.txt_Location,{fontSize:18,alignSelf:'center'}]} numberOfLines={1} ellipsizeMode={'tail'}>Mời chọn địa chỉ nhận hàng</Text>
+                            <Text style={styles.txt_Location} numberOfLines={1} ellipsizeMode={'tail'}></Text>
+                        </View>}
                         <View style={{alignItems:'center',justifyContent:'center',flex:0.1}}>
-                        <Icon name='chevron-right' size={20} color={'#a9a9a9'}></Icon>
+                        {addressSelect&&<Icon name='chevron-right' size={20} color={'#a9a9a9'}></Icon>}
                         </View>
                     </View>
                 </TouchableOpacity>

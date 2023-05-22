@@ -2,80 +2,119 @@ import React, { PureComponent, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, ScrollView, Pressable, ViewBase, FlatList, Image, TouchableOpacity } from 'react-native'
 import color from '../../src/Color';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { db } from '../../firebase/index'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {DATA} from './DATA'
-const listTab = ['All Ingredient', 'Meat,Fish,Egg,Seafood', 'Vegetable,Mushroom,fruit', 'Spice,Cooking oil', 'Beverage,Beer', 'Milk', 'Confectionery'];
+const listTab = ['Tất cả', 'Thịt,cá,trứng,hải sản', 'Rau,củ,quả,trái cây', 'Dầu ăn,nước chấm,gia vị', 'Nước ngọt,bia,sữa', 'Gạo,bột,đồ khô', 'Kem,thực phẩm đông lạnh'];
 function TapRecipe(props) {
+  const { navigation } = props
   const [tabSelect, setTabSelect] = useState(0);
-  const [addcard,setAddCard] =useState(false);
+  const [addcard, setAddCard] = useState(false);
 
-  
-  // const DATA = [
-  //   {
-  //       id: '001',
-  //       name: 'Trứng gà HoHoFood 10 quả',
-  //       image: '../../src/images/egg.png',
-  //       percent: '10%',
-  //       status: 'Available',
-  //       price: 27000,
-  //       starpoint: 4,
-  //       promotion: 'Mua 3 tính tiền 4 giao 1'
-  //   },
-  //   {
-  //       id: '002',
-  //       name: 'Cá hồi biển AoMaCaNaDaFood 1kg',
-  //       image: '../../src/images/fish.png',
-  //       percent: '15%',
-  //       status: 'Pre-order',
-  //       price: 90000,
-  //       starpoint: 4,
-  //       promotion: 'Mua 3 giao hàng 3'
-  //   },
-  //   {
-  //       id: '003',
-  //       name: 'Đậu gì chả biết alolaco 0.5kg nhưng cân bị hư',
-  //       image: '../../src/images/spice.png',
-  //       percent: '5%',
-  //       status: 'Sold-out',
-  //       price: 10000,
-  //       starpoint: 5,
-  //       promotion: ''
-  //   },
-  //   {
-  //     id: '004',
-  //     name: 'Đậu gì chả biết alolaco 0.5kg nhưng cân bị hư',
-  //     image: '../../src/images/spice.png',
-  //     percent: '5%',
-  //     status: 'Sold-out',
-  //     price: 10000,
-  //     starpoint: 5,
-  //     promotion: ''
-  // },
-  // ];
+  const [listdata, setListdata] = useState([])
+  const [listdataDis, setListdataDis] = useState([])
+  const [loading, setLoading] = useState(false)
+
+
+  useEffect(() => {
+    getData();
+  }, [])
+
+  useEffect(() => {
+    switch (tabSelect) {
+      case 0:
+        setListdataDis(listdata)
+        break;
+      case 1:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp01" }))
+        break;
+      case 2:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp02" }))
+        break;
+      case 3:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp03" }))
+        break;
+      case 4:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp04" }))
+        break;
+      case 5:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp05" }))
+        break;
+      case 6:
+        setListdataDis(listdata.filter((item) => { return item.maloaitp == "tp06" }))
+        break;
+      default:
+        setListdataDis(listdata)
+    }
+
+  }, [tabSelect])
+
+  const getData = async () => {
+    setLoading(true)
+    const q = query(collection(db, "THUCPHAM"),
+      // where("soluongcon", ">", 0), 
+      orderBy("sosao", 'desc'),
+      // orderBy("sosao",'desc')
+      limit(15)
+    );
+    const querySnapshot = await getDocs(q);
+    const list = []
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id, ...doc.data() })
+      console.log(doc.data().ten)
+    });
+    setTimeout(() => {
+      setListdata(list)
+      setListdataDis(list)
+      setLoading(false);
+    }, 3000);
+    setTabSelect(0)
+  };
+  const DATA = [
+    {
+      id: '002',
+    },
+    {
+      id: '003',
+    },
+    {
+      id: '001',
+    },
+  ];
+
   const renderlist = ({ item }) => {
     return (
-      <View style={styles.boxitem}>
-        <Image source={{uri:item.image}} style={styles.img}></Image>
+      <TouchableOpacity
+        style={styles.boxitem}
+        onPress={() => navigation.navigate('ProductDetail',
+          {
+            itemDetail: item,
+            shopOfPro: {}
+          }
+        )}>
+        <Image source={{ uri: item.image }} style={styles.img}></Image>
         <View style={styles.titleBox}>
-          <Text style={styles.textTitle} numberOfLines={2} ellipsizeMode={'tail'}>{item.name}</Text>
-          <View flexDirection='row' >
+          <View style={{ height: 40, justifyContent: 'center' }}>
+            <Text style={styles.textTitle} numberOfLines={2} ellipsizeMode={'tail'}>{item.ten}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', marginBottom: 2 }}>
             <View flex={2}>
-              <Text style={styles.TextPrice}>{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+              <Text style={styles.TextPrice}>{item.giagoc.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
               <View style={styles.status}>
-                <Icon name='circle' style={{ color:item.status=='Available'?'green':(item.status=='Sold-out'?'red':'orange') }}></Icon>
-                <Text style={{color:item.status=='Available'?'green':(item.status=='Sold-out'?'red':'orange'), marginLeft:5,fontSize:15}}>{item.status} </Text>
+                <Icon name='circle' style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange') }}></Icon>
+                <Text style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange'), marginLeft: 5, fontSize: 15 }}>{item.trangthai} </Text>
               </View>
             </View>
 
             {/* <View style={styles.iconbox}> */}
-              <View flex={1} ></View>
-              <TouchableOpacity style={styles.addCart} onPress={()=>{setAddCard(!addcard)}}>
-              <MaterialCommunityIcons name='cart-plus' style={{ color: 'black',fontSize:25}}></MaterialCommunityIcons>
-              </TouchableOpacity>
+            <View flex={1} ></View>
+            <TouchableOpacity style={styles.addCart} onPress={() => { setAddCard(!addcard) }}>
+              <MaterialCommunityIcons name='cart-plus' style={{ color: 'black', fontSize: 25 }}></MaterialCommunityIcons>
+            </TouchableOpacity>
             {/* </View> */}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
   return (
@@ -84,20 +123,34 @@ function TapRecipe(props) {
         <ScrollView horizontal contentContainerStyle={styles.ScrollView} >
           <View style={styles.box}>
             {listTab.map((tab, id) => (
-              <Pressable key={id} onPress={() => setTabSelect(id)} style={[styles.itemTitle,tabSelect == id && {backgroundColor:color.main}]}>
-                <Text style={[styles.text,tab.length<10 &&{width:'auto'} ,tabSelect == id && { color: 'white',width:'auto'}]} numberOfLines={1}>{tab}</Text>
+              <Pressable key={id} onPress={() => setTabSelect(id)} style={[styles.itemTitle, tabSelect == id && { backgroundColor: color.main }]}>
+                <Text style={[styles.text, tab.length < 10 && { width: 'auto' }, tabSelect == id && { color: 'white', width: 'auto' }]} numberOfLines={1}>{tab}</Text>
                 {/* {tabSelect == id && <View style={styles.underline}></View>} */}
               </Pressable>
             ))}
           </View>
         </ScrollView>
       </View>
-      <FlatList showsVerticalScrollIndicator={false} 
-      scrollEnabled={false}
-      renderItem={({item})=>renderlist({item})} 
-      data={DATA} 
-      keyExtractor={item=>item.id}>
-      </FlatList>
+      {loading == false ?
+        <FlatList showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          renderItem={({ item }) => renderlist({ item })}
+          data={listdataDis}
+          keyExtractor={item => item.id}>
+        </FlatList>
+        :
+        <FlatList showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          renderItem={() =>
+            <View style={[styles.boxitem, { backgroundColor: 'white' }]}>
+              <View style={styles.img}></View>
+              <View style={styles.titleBox}></View>
+            </View>
+          }
+          data={DATA}
+          keyExtractor={item => item.id}>
+        </FlatList>
+      }
     </View>
   )
 }
@@ -110,22 +163,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10
   },
-  itemTitle:{
-    backgroundColor:'white', 
-    marginHorizontal:10,
-    borderRadius:20,
-    justifyContent:'center',
-    alignItems:'center'
+  itemTitle: {
+    backgroundColor: 'white',
+    marginHorizontal: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   text: {
     fontSize: 17,
     color: 'gray',
     marginHorizontal: 10,
-    marginVertical:5,
-    width:100,
-    fontWeight:'400',
-    color:'black',
-    textAlign:'center'
+    marginVertical: 5,
+    width: 100,
+    fontWeight: '400',
+    color: 'black',
+    textAlign: 'center'
   },
   underline: {
     height: 2,
@@ -146,7 +199,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
     flexDirection: 'row',
-    //borderWidth:1
+    // borderWidth:1,
+    backgroundColor: 'white',
+    elevation: 10
     //width: '95%',
   },
   titleBox: {
@@ -155,12 +210,12 @@ const styles = StyleSheet.create({
   textTitle: {
     color: 'black',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     paddingLeft: 5
   },
   iconbox: {
     flex: 0.3,
-    backgroundColor:'red'
+    backgroundColor: 'red'
   },
   TextPrice: {
     color: 'red',
@@ -175,8 +230,8 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   addCart: {
-    marginRight:5,
-    justifyContent:'center',
-    alignItems:'center'
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 })

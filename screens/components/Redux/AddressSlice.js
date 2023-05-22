@@ -1,5 +1,6 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
+
 const addres = [
     {
         id:'001',
@@ -31,20 +32,20 @@ export const AddressSlice = createSlice({
     
   name: "address",
   initialState: {
-    id: def.id,
-    name: def.name,
-    address: def.address,
-    street: def.street,
-    numphone: def.numphone,
+    id: "",
+    tennguoinhan: "",
+    diachi: "",
+    motachitiet: "",
+    sdt: "",
   },
   reducers: {
     updateAdd: (state, action) => {
       const newCart = {
         id: action.payload.id,
-        name: action.payload.name,
-        address: action.payload.address,
-        street: action.payload.street,
-        numphone: action.payload.numphone,
+        tennguoinhan: action.payload.tennguoinhan,
+        diachi: action.payload.diachi,
+        motachitiet: action.payload.motachitiet,
+        sdt: action.payload.sdt,
       };
     //   state=newCart;
      

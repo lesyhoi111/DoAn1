@@ -91,7 +91,7 @@ function Login(props) {
                         <Icon name="google-plus-official" size={50} color='red'></Icon>
                     </View>
                 </View>
-            {/* } */}
+           
             {loading==true&&
             <View style={{position:'absolute',height:height,width:width,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
                 <Lottie source={require('../src/Lottie/loading2.json')} autoPlay speed={1.5}/>

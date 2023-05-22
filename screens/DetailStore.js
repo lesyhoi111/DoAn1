@@ -2,6 +2,8 @@ import { Text, StyleSheet, Image, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import color from '../src/Color';
 const DetailStore = (props) => {
+    const { navigation, route } = props
+    const { shop } = route.params
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -18,12 +20,12 @@ const DetailStore = (props) => {
                 <View style={styles.row}>
                     <Image
                         style={styles.imgStore}
-                        source={{ uri: 'https://png.pngtree.com/template/20191125/ourmid/pngtree-book-store-logo-template-sale-learning-logo-designs-vector-image_335046.jpg' }}
+                        source={{ uri: shop.image}}
                     ></Image>
                     <View>
-                        <Text style={styles.txtName}>Duc VN Official</Text>
+                        <Text style={styles.txtName}>{ shop.ten}</Text>
                         <Text style={styles.txtStatus}>Online 7 phút trước</Text>
-                        <Text style={styles.txtFollowing}>Người theo dõi 2,2k</Text>
+                        <Text style={styles.txtFollowing}>Người theo dõi { shop.soluottd}</Text>
                     </View>
                 </View>
 
@@ -34,7 +36,7 @@ const DetailStore = (props) => {
                 <Icon name="star" style={styles.icon} />
                 <Text style={styles.txtDes}>Đánh giá</Text>
                 </View>
-                <Text style={styles.txtValue}>4.9/5 (13k lượt đánh giá)</Text>
+                <Text style={styles.txtValue}>{shop.sosao.toFixed(1)}/5 ({shop.soluotdanhgia} lượt đánh giá)</Text>
             </View>
 
             <View style={styles.itemRow}>
@@ -42,7 +44,7 @@ const DetailStore = (props) => {
                 <Icon name="rocketchat" style={styles.icon} />
                 <Text style={styles.txtDes}>Tỉ lệ phản hồi</Text>
                 </View>
-                <Text style={styles.txtValue}>100%</Text>
+                <Text style={styles.txtValue}>{((shop.soluotdanhgia/shop.sospdaban)*100).toFixed(1)}%</Text>
             </View>
 
             <View style={styles.itemRow}>
@@ -50,15 +52,15 @@ const DetailStore = (props) => {
                 <Icon name="store" style={styles.icon} />
                 <Text style={styles.txtDes}>Sản phẩm</Text>
                 </View>
-                <Text style={styles.txtValue}>38</Text>
+                <Text style={styles.txtValue}>{shop.sosp}</Text>
             </View>
 
             <View style={styles.itemRow}>
                 <View style={styles.row}>
                 <Icon name="user" style={styles.icon} />
-                <Text style={styles.txtDes}>Đã tham gia</Text>
+                <Text style={styles.txtDes}>Tham gia từ ngày </Text>
                 </View>
-                <Text style={styles.txtValue}>2 năm</Text>
+                <Text style={styles.txtValue}>{shop.ngaythamgia}</Text>
             </View>
             </View>
            

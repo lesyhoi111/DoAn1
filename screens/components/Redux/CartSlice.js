@@ -14,7 +14,7 @@ export const CartSlice = createSlice({
       priceOf: 0,
       condition: 0,
       remain: 0,
-    }
+    },
   },
   reducers: {
     addCart: (state, action) => {
@@ -36,13 +36,15 @@ export const CartSlice = createSlice({
           ...state.items,
           {
             id: nanoid(),
-            idCart: action.payload.idCart,
-            name: action.payload.name,
-            image: action.payload.image,
-            percent: action.payload.percent,
-            sale: action.payload.sale,
-            status: action.payload.status,
-            price: action.payload.price,
+            // idCart: action.payload.idCart,
+            // name: action.payload.name,
+            // image: action.payload.image,
+            // percent: action.payload.percent,
+            // sale: action.payload.sale,
+            // status: action.payload.status,
+            // price: action.payload.price,
+            // num: action.payload.num,
+            product:action.payload.item,
             num: action.payload.num,
           },
         ],
@@ -52,7 +54,7 @@ export const CartSlice = createSlice({
       // state.items =state.items.filter((item)=>item.idCart!==action.payload)
       return {
         ...state,
-        items: state.items.filter((item) => item.idCart !== action.payload),
+        items: state.items.filter((item) => item.product.id !== action.payload),
       };
     },
     addVoucher: (state, action) => {

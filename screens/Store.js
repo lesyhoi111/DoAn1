@@ -6,6 +6,8 @@ import Search from './components/Search';
 import color from '../src/Color';
 import TapRecipeStore from './components/TapRecipeStore'
 function Store(props) {
+    const { navigation, route } = props
+    const { shop } = route.params
 const [search,setSearch] = useState('')
 const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.toLowerCase()))
     return (
@@ -18,14 +20,14 @@ const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.
                 <Search onChangeText = {(text)=>{setSearch(text)}}></Search>
                 </View>
             </View>
-            <TouchableOpacity style={styles.store} onPress={()=>{props.navigation.navigate("DetailStore")}}>
+            <TouchableOpacity style={styles.store} onPress={()=>{props.navigation.navigate("DetailStore",{shop:shop})}}>
                 <View style={styles.row1Store}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
                     <Image
                     style = {styles.imgStore}
-                    source={{uri : 'https://png.pngtree.com/template/20191125/ourmid/pngtree-book-store-logo-template-sale-learning-logo-designs-vector-image_335046.jpg'}}
+                    source={{uri : shop.image}}
                     ></Image>
-                    <Text style={styles.text}>Duc</Text>
+                    <Text style={styles.text}>{shop.ten}</Text>
                     </View>
               
                     <TouchableOpacity style={styles.btnFollow}>
@@ -34,11 +36,11 @@ const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                     <View style={{flexDirection:'row'}}>
-                    <Text style={styles.text}>95% </Text>
-                    <Text style={styles.text1}>Đánh giá tích cực</Text>
+                    <Text style={styles.text}>{shop.sosp} </Text>
+                    <Text style={styles.text1}>Sản phẩm</Text>
                     </View>
                     <View style={{flexDirection:'row'}}>
-                    <Text style={styles.text}>2,2k </Text>
+                    <Text style={styles.text}>{shop.soluottd} </Text>
                     <Text style={styles.text1}>Lượng theo dõi</Text>
                     </View>
                    
