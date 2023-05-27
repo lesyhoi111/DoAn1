@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { isValidEmail, isValidRePass, isValidPass, isValidName } from '../utilies/Validatetions';
-import { auth, createUserWithEmailAndPassword, collection, addDoc, db } from '../firebase/firebase'
+import { auth, createUserWithEmailAndPassword, collection, setDoc, db, doc } from '../firebase/firebase'
 import moment from 'moment';
 function Register(props) {
   //const [keyBoardIsShow,setKeyBoardIsShow]=useState(false)
@@ -20,12 +20,46 @@ function Register(props) {
   const [errorRePassword, setErrorRePassword] = useState('')
   const [modalVisible, setModalVisible] = useState(false);
   const [message, setMessage] = useState('');
+  const [id, setId] = useState('')
   const isValidOK = () => email.length > 0 && name.length > 0 && password > 0 && isValidEmail(email) && isValidName(name) && isValidPass(password) && password == rePassword
 
   const { navigation, route } = props
   const { navigate, goBack } = navigation
-  const addUser = async (name, email, password) => {
-    const docRef = await addDoc(collection(db, "KHACHHANG"), {
+
+  handleRegister = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        addUser(user.uid, name, user.email, password)
+        setEmail('')
+        setPassword('')
+        setRePassword('')
+        setName(''),
+        setMessage('Đăng ký tài khoản thành công, quay lại đăng nhập để bắt đầu mua sắm ngay thôi nào!!')
+        setModalVisible(true)
+      })
+      .catch((error) => {
+
+        if (error.code === 'auth/email-already-in-use') {
+          setMessage('Tài khoản Email này đã được đăng ký')
+        } else {
+          setMessage(error)
+        }
+        setModalVisible(true)
+
+        // ..
+      })
+  }
+  handleNavigate = ()=>{
+    if(email){
+      setModalVisible(false)
+    }else{
+      navigation.navigate('Login')
+    }
+  }
+  const addUser = async (id, name, email, password) => {
+    const docRef = await setDoc(doc(db, "KHACHHANG", id), {
       name: name,
       email: email,
       password: password,
@@ -91,28 +125,8 @@ function Register(props) {
                 }}></TextInput>
               <View style={{ height: 1, backgroundColor: '#5DCCF5', marginHorizontal: 15 }}></View>
               <Text style={{ color: 'red', paddingLeft: 15, marginVertical: 5 }}>{errorRePassword}</Text>
-              <TouchableOpacity style={[styles.button, { backgroundColor: isValidOK() == true ? '#FA6D21' : '#5DCCF5' }]} disabled={isValidOK() == false} 
-              onPress={() => createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                  // Signed in 
-                  const user = userCredential.user;
-                  addUser(name, user.email, password)
-                  setEmail('')
-                  setPassword('')
-                  setRePassword('')
-                  setName('')
-                })
-                .catch((error) => {
-                  
-                  if(error.code === 'auth/email-already-in-use'){
-                    setMessage('Tài khoản Email này đã được đăng ký')
-                  }else{
-                  setMessage(error.code)
-                }
-                  setModalVisible(true)
-                  
-                  // ..
-                })}>
+              <TouchableOpacity style={[styles.button, { backgroundColor: isValidOK() == true ? '#FA6D21' : '#5DCCF5' }]} disabled={isValidOK() == false}
+                onPress={handleRegister}>
                 <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white', marginVertical: 7 }}>Register</Text>
               </TouchableOpacity>
             </View>
@@ -139,7 +153,7 @@ function Register(props) {
                   <Text style={styles.modalText}>{message}</Text>
                   <Pressable
                     style={[styles.buttonM, styles.buttonClose]}
-                    onPress={() =>setModalVisible(false)}>
+                    onPress={handleNavigate}>
                     <Text style={styles.textStyle}>Xác nhận</Text>
                   </Pressable>
                 </View>

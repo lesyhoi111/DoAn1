@@ -7,11 +7,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Lottie from 'lottie-react-native';
 import Color from '../src/Color'
-import { auth, createUserWithEmailAndPassword, collection, addDoc, db } from '../firebase/firebase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get('window');
 function Profile(props) {
     const {navigation,route}=props
     const {navigate,goBack}=navigation
+    const removeItemFromStorage = async (key) => {
+        try {
+          await AsyncStorage.removeItem(key);
+          console.log('Item removed successfully.');
+          navigation.navigate('Login')
+        } catch (error) {
+          console.log('Error removing item from AsyncStorage:', error);
+        }
+      };
     return (
         
         
@@ -90,7 +99,7 @@ function Profile(props) {
                         <Icon name='chevron-right' size={20} color={'#a9a9a9'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    onPress={()=>{auth.signOut(); navigation.navigate('Login')}}
+                    onPress={()=>removeItemFromStorage('user')}
                     style={{ flexDirection: 'row',padding:20,paddingTop:0}}>
                         <MaterialCommunityIcons name='logout' size={25} color={'red'}></MaterialCommunityIcons>
                         <View style={{ flex: 1,paddingLeft:15  }}>

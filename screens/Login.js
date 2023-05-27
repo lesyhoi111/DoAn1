@@ -8,6 +8,8 @@ import Lottie from 'lottie-react-native';
 import { Dimensions } from 'react-native';
 import { Image } from 'react-native-elements';
 import { signInWithEmailAndPassword, auth} from '../firebase/firebase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const { width, height } = Dimensions.get('window');
 
 function Login(props) {
@@ -20,12 +22,12 @@ function Login(props) {
     // })
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
     const [errorEmail, setErrorEmail] = useState('')
     const [errorPassword, setErrorPassword] = useState('')
     const [errorRePassword, setErrorRePassword] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [message, setMessage] = useState('');
+   
     const isValidOK = () => email.length > 0 && password > 0 && isValidEmail(email) && isValidPass(password) 
 
     const {navigation,route}=props
@@ -34,9 +36,9 @@ function Login(props) {
     const handleLogin =()=>{
     signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
+                AsyncStorage.setItem('user', JSON.stringify(userCredential.user));
                 setPassword('')
+                setEmail('')
                 setLoading(true);
                 setTimeout(() => {
                     navigate('UITab')

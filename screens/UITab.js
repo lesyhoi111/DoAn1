@@ -10,11 +10,27 @@ import Cart from './Cart'
 import SearchScreen from './SearchScreen'
 import StackProfile from './StackProfile'
 import Color from '../src/Color' 
-
+import { useDispatch } from 'react-redux'
+import { addUser } from './components/Redux/CurentUserSlice'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Tab = createBottomTabNavigator();
 // export const MyContext = createContext();
 
 function UITab() {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const getUserCredential = async () => {
+        try {
+            const userCredential = await AsyncStorage.getItem('user');
+            if (userCredential) {
+                dispatch(addUser(userCredential))
+            } 
+        } catch (error) {
+            console.log('Error retrieving user credential:', error);
+        }
+    };
+    getUserCredential();
+}, []);
 //   const [listdata, setListdata] = useState([]);
 //   useEffect(()=>{
 //     getData();
