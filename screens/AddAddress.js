@@ -9,13 +9,14 @@ import color from '../src/Color';
 const cityData = ['Hà Nội', 'TP.HCM', 'Đà Nẵng'];
 const districtData = {
     'Hà Nội': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ'],
-    'TP.HCM': ['Quận 1', 'Quận 2', 'Quận 3'],
+    'TP.HCM': ['Quận 1', 'Quận 4', 'Quận 3', 'Quận 5', 'Quận 6', 'Quận 7','Quận 8','Quận 10','Quận 11','Quận 12','Thành phố Thủ Đức','Quận Bình Tân','	Quận Bình Thạnh','Quận Gò Vấp','Quận Phú Nhuận','Quận Tân Bình','Quận Tân Phú','Huyện Bình Chánh','Huyện Cần Giờ','Huyện Củ Chi','Huyện Hóc Môn','Huyện Nhà Bè'],
     'Đà Nẵng': ['Hải Châu', 'Thanh Khê', 'Sơn Trà'],
 };
 const wardData = {
     'Ba Đình': ['Phúc Xá', 'Ngọc Hà', 'Liễu Giai'],
     'Hoàn Kiếm': ['Hàng Bài', 'Hàng Trống', 'Cửa Đông'],
     'Tây Hồ': ['Quảng An', 'Xuân La', 'Tứ Liên'],
+    'Thành phố Thủ Đức': ['Phường An Khánh', 'Phường An Lợi Đông', 'Phường An Phú','Phường Bình Chiểu'],
     'Quận 1': ['Bến Nghé', 'Bến Thành', 'Cầu Kho'],
     'Quận 2': ['Thảo Điền', 'An Phú', 'Bình An'],
     'Quận 3': ['Nguyễn Thông', 'Võ Thị Sáu', 'Nam Kỳ Khởi Nghĩa'],

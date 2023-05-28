@@ -1,10 +1,12 @@
-import React,{ createContext, useState,useEffect }  from 'react';
+import React,{ createContext, useState,useContext,useEffect }  from 'react';
 import { Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { collection, query, where, getDocs,orderBy,limit  }  from "firebase/firestore";
 import {db} from '../firebase/index'
+import {auth} from "../firebase/firebase"
+import { MyContext } from '../App';
 import Home from './Home'
 import Cart from './Cart'
 import SearchScreen from './SearchScreen'
@@ -12,7 +14,7 @@ import StackProfile from './StackProfile'
 import Color from '../src/Color' 
 
 const Tab = createBottomTabNavigator();
-// export const MyContext = createContext();
+export const UIContext = createContext();
 
 function UITab() {
 //   const [listdata, setListdata] = useState([]);
@@ -34,8 +36,27 @@ function UITab() {
 //       console.log(listdata)
       
 // };
+const [myuser, setMyuser] = useState({
+  anhdaidien: "",
+  id: "",
+  ten: "",
+  email: "",
+  password: "",
+  ngaythamgia: "",
+  magiamgiadadung: [],
+  sdt: "00",
+  ngaysinh: "",
+  sotien: 0,
+  uid: ""
+})
+const user = auth.currentUser;
+const { listdata, shop, listuser } = useContext(MyContext);
+useEffect(() => {
+  setMyuser(listuser.find((item) => { return item.uid == user.uid }))
+  // getlistuser();
+})
   return (
-    // <MyContext.Provider value={{ listdata, setListdata }}>
+    <UIContext.Provider value={{ myuser, setMyuser }}>
     <Tab.Navigator initialRouteName="Home"  screenOptions={{
         tabBarShowLabel:false,
         headerShown:false,
@@ -73,7 +94,7 @@ function UITab() {
           ),
         }}/>
     </Tab.Navigator>
-    // </MyContext.Provider>
+    </UIContext.Provider>
   );
 }
 export default UITab;

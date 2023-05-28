@@ -14,7 +14,7 @@ function SearchScreen(props) {
     const [search, setSearch] = useState('')
     // const [listdata,setListdata]=useState([])
     const [loading, setLoading] = useState(false)
-    const { listdata, shop } = useContext(MyContext);
+    const { listdata, shop,listuser } = useContext(MyContext);
 
     // useEffect(()=>{
     //     getData();

@@ -10,8 +10,11 @@
     "test": "jest"
   },
   "dependencies": {
+    "@firebase/storage": "^0.11.2",
     "@react-native-community/checkbox": "^0.5.15",
     "@react-native-community/datetimepicker": "^7.0.1",
+    "@react-native-firebase/app": "^17.5.0",
+    "@react-native-firebase/storage": "^17.5.0",
     "@react-native-picker/picker": "^2.4.10",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
@@ -23,8 +26,10 @@
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-elements": "^3.4.3",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-image-crop-picker": "^0.39.0",
+    "react-native-image-picker": "^5.3.1",
     "react-native-image-slider-box": "^2.0.7",
     "react-native-modal-datetime-picker": "^15.0.0",
     "react-native-paper": "^5.7.2",

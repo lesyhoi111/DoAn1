@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Modal, TextInput, Button, View, Text, TouchableOpacity, Alert, StyleSheet, ScrollView } from 'react-native';
 import Color from '../../src/Color';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useDispatch } from "react-redux";
 import { addVoucher } from "./Redux/CartSlice";
+import { collection, query, documentId, getDocs, doc, where } from "firebase/firestore";
+import { db } from '../../firebase/index'
 import Lottie from 'lottie-react-native';
 
-const ModalVoucher = ({ visible, onClose, onTrue }) => {
+const ModalVoucher = ({ visible, onClose, onTrue,listVou }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  
 
   const addres = [
     {
@@ -46,6 +49,7 @@ const ModalVoucher = ({ visible, onClose, onTrue }) => {
     },
   ];
 
+  
   const handleUpdate = async (item) => {
     setLoading(true)
     
@@ -53,14 +57,14 @@ const ModalVoucher = ({ visible, onClose, onTrue }) => {
     await dispatch(
         addVoucher({
           id: item.id,
-          name: item.name,
-          num: item.num,
-          dateStart: item.dateStart,
-          dateEnd: item.dateEnd,
-          type: item.type,
-          priceOf: item.priceOf,
-          condition: item.condition,
-          remain: item.remain,
+          name: item.tenma,
+          num: item.soluong,
+          dateStart: item.ngaybatdau,
+          dateEnd: item.ngayketthuc,
+          type: item.loaigiamgia,
+          priceOf: item.sotiengiam,
+          condition: item.dieukiendonhang,
+          remain: item.soluongcon,
         })
     )
     setTimeout(() => {
@@ -85,10 +89,10 @@ const ModalVoucher = ({ visible, onClose, onTrue }) => {
             </TouchableOpacity>
           </View>
           <ScrollView style={{ width: '100%' }}>
-            {addres.map((item, index) => (
+            {listVou.map((item, index) => (
               <TouchableOpacity key={index} style={{ marginHorizontal: 10, borderWidth: 1, borderColor: '#d0d7de', flexDirection: 'row', marginTop: 10 }}  
                 onPress={() => { handleUpdate(item) }}>
-                {item.type=='freeship'?
+                {item.loaigiamgia=='freeship'?
                 <View style={{ height: 100,backgroundColor:'lightseagreen',width:110 }}>
                   <Text style={{color:'white',fontSize:20,fontWeight:'bold',marginTop:15,alignSelf:'center',fontStyle:'italic'}}>FREE</Text>
                   <Text style={{color:'white',fontSize:20,fontWeight:'bold',marginBottom:8,alignSelf:'center',fontStyle:'italic'}}>SHIP</Text>
@@ -102,11 +106,11 @@ const ModalVoucher = ({ visible, onClose, onTrue }) => {
                 </View>
                 }
                 <View style={{paddingVertical:10,paddingLeft:10,justifyContent:'center'}}>
-                  <Text style={{color:'black',fontSize:18,fontWeight:'500'}} numberOfLines={2} ellipsizeMode={'tail'}>{item.name}</Text>
-                  <Text style={[styles.content_mini,{fontSize:15}]}>Đơn hàng tối thiểu {item.condition.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                  <Text style={{color:'black',fontSize:18,fontWeight:'500',marginBottom:10}} numberOfLines={2} ellipsizeMode={'tail'}>{item.tenma}</Text>
+                  <Text style={[styles.content_mini,{fontSize:15}]}>Đơn hàng tối thiểu {item.dieukiendonhang.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                  <View style={{flexDirection:'row'}}>
-                  <Text style={styles.content_mini}>BĐ: {item.dateEnd}</Text>
-                  <Text style={styles.content_mini}>KT: {item.dateEnd}</Text>
+                  <Text style={styles.content_mini}>BĐ: {item.ngaybatdau}</Text>
+                  <Text style={styles.content_mini}>KT: {item.ngayketthuc}</Text>
                   </View>
                 </View>
               </TouchableOpacity>

@@ -8,7 +8,6 @@ const ModalVerify = ({ visible, onClose, password, onTrue }) => {
 
   const handleSave = () => {
     if(pass==password){
-        Alert.alert("lưu thành công")
         onClose();
         onTrue();
     }else{

@@ -14,7 +14,9 @@ import Order from './screens/Order'
 import IngredientSale from './screens/components/IngredientSale'
 import TapRecipe from './screens/components/TapRecipe'
 import TapRecipeStore from './screens/components/TapRecipeStore'
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import Address from './screens/Address'
+import MyAccount from './screens/MyAccount'
+import { collection, query, where, getDocs, orderBy, limit,onSnapshot } from "firebase/firestore";
 import { db } from './firebase/index'
 import store from "./screens/components/Redux/Store";
 import { Provider } from "react-redux";
@@ -22,6 +24,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 let listdata=[];
 let shop=[];
+let listuser=[];
 const Stack = createNativeStackNavigator();
 export const MyContext = createContext();
 
@@ -31,7 +34,8 @@ function App(props) {
     // const [shop, setShop] = useState();
     useEffect(() => {
         getData();
-        getListShop()
+        getListShop();
+        getlistuser();
     }, [])
     const getData = async () => {
         console.log("getdata")
@@ -45,12 +49,6 @@ function App(props) {
                 listdata.push({ id: doc.id, ...doc.data() });
                 console.log(doc.id)
             });
-            // setTimeout(() => {
-            //     // setListdata(results)
-            //     // console.log(results)
-            //     console.log(listdata)
-            // },5000)
-            // console.log(listdata)
         } catch (error) {
             console.error(error);
         }
@@ -61,24 +59,36 @@ function App(props) {
             const thucphamRef = collection(db, "CUAHANG");
             const thucphamQuery = query(thucphamRef,);
             const querySnapshot = await getDocs(thucphamQuery);
-            const results = [];
             querySnapshot.forEach((doc) => {
               shop.push({ id: doc.id, ...doc.data() });
           });
-        //   setTimeout(() => {
-        //     // setShop(results)
-        //     console.log(shop)
-        // },5000)
-        // console.log(shop)
           } catch (error) {
             console.error(error)
           }
       }
-    
+      const getlistuser = async () => {
+        try {
+        //     const thucphamRef = collection(db, "KHACHHANG");
+        //     const thucphamQuery = query(thucphamRef);
+        //     const querySnapshot = await getDocs(thucphamQuery);
+        //     querySnapshot.forEach((doc) => {
+        //         listuser.push({ id: doc.id, ...doc.data() });
+        //   });
+        const q = query(collection(db, "KHACHHANG"));
+            const querySnapshot = onSnapshot(q, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                listuser.push({ id: doc.id, ...doc.data() });
+                console.log(doc.data())
+              });
+            });
+          } catch (error) {
+            console.error(error)
+          }
+      }
 
     return (
         <Provider store={store}>
-            <MyContext.Provider value={{ listdata, shop }}>
+            <MyContext.Provider value={{ listdata, shop,listuser }}>
                 <NavigationContainer>
                     <Stack.Navigator initialRouteName="BoardingSlider" screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="BoardingSlider" component={BoardingSlider} />
@@ -93,6 +103,8 @@ function App(props) {
                         <Stack.Screen name="IngredientSale" component={IngredientSale} />
                         <Stack.Screen name="TapRecipe" component={TapRecipe} />
                         <Stack.Screen name="TapRecipeStore" component={TapRecipeStore} />
+                        <Stack.Screen name="Address" component={Address} />
+                        <Stack.Screen name="MyAccount" component={MyAccount} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </MyContext.Provider>
