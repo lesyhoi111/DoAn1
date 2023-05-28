@@ -69,6 +69,7 @@ function Register(props) {
       ngaysinh: "",
       cuahangdangtheodoi:[],
       sotien: 0,
+      uid:""
     });
     const diaChiRef = await addDoc(collection(docRef, "DIACHIGIAOHANG"));
     const donHangRef = await addDoc(collection(docRef, "DONHANG"));
