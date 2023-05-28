@@ -14,7 +14,9 @@ import Order from './screens/Order'
 import IngredientSale from './screens/components/IngredientSale'
 import TapRecipe from './screens/components/TapRecipe'
 import TapRecipeStore from './screens/components/TapRecipeStore'
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import Address from './screens/Address'
+import MyAccount from './screens/MyAccount'
+import { collection, query, where, getDocs, orderBy, limit,onSnapshot } from "firebase/firestore";
 import { db } from './firebase/index'
 import store from "./screens/components/Redux/Store";
 import { Provider } from "react-redux";
@@ -22,8 +24,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Lottie from 'lottie-react-native';
 
-let listdata = [];
-let shop = [];
+let listdata=[];
+let shop=[];
+let listuser=[];
 const Stack = createNativeStackNavigator();
 export const MyContext = createContext();
 
@@ -56,7 +59,8 @@ function App(props) {
     // const [shop, setShop] = useState();
     useEffect(() => {
         getData();
-        getListShop()
+        getListShop();
+        getlistuser();
     }, [])
     const getData = async () => {
         console.log("getdata")
@@ -69,12 +73,6 @@ function App(props) {
             querySnapshot.forEach((doc) => {
                 listdata.push({ id: doc.id, ...doc.data() });
             });
-            // setTimeout(() => {
-            //     // setListdata(results)
-            //     // console.log(results)
-            //     console.log(listdata)
-            // },5000)
-            // console.log(listdata)
         } catch (error) {
             console.error(error);
         }
@@ -85,49 +83,56 @@ function App(props) {
             const thucphamRef = collection(db, "CUAHANG");
             const thucphamQuery = query(thucphamRef,);
             const querySnapshot = await getDocs(thucphamQuery);
-            const results = [];
             querySnapshot.forEach((doc) => {
-                shop.push({ id: doc.id, ...doc.data() });
-            });
-            //   setTimeout(() => {
-            //     // setShop(results)
-            //     console.log(shop)
-            // },5000)
-            // console.log(shop)
-        } catch (error) {
+              shop.push({ id: doc.id, ...doc.data() });
+          });
+          } catch (error) {
             console.error(error)
-        }
-    }
+          }
+      }
+      const getlistuser = async () => {
+        try {
+        //     const thucphamRef = collection(db, "KHACHHANG");
+        //     const thucphamQuery = query(thucphamRef);
+        //     const querySnapshot = await getDocs(thucphamQuery);
+        //     querySnapshot.forEach((doc) => {
+        //         listuser.push({ id: doc.id, ...doc.data() });
+        //   });
+        const q = query(collection(db, "KHACHHANG"));
+            const querySnapshot = onSnapshot(q, (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                listuser.push({ id: doc.id, ...doc.data() });
+                console.log(doc.data())
+              });
+            });
+          } catch (error) {
+            console.error(error)
+          }
+      }
 
-    if (isLoading) {
-        return (
-            <View style={{ flex: 1, backgroundColor: '#5DCCF5', alignItems: 'center', justifyContent: 'center' }}>
-                <Lottie source={require('./src/Lottie/loading2.json')} autoPlay speed={1.5} />
-            </View>
-        );
-    } else {
-        return (
-            <Provider store={store}>
-                <MyContext.Provider value={{ listdata, shop }}>
-                    <NavigationContainer>
-                        <Stack.Navigator initialRouteName={isLogin ? "UITab" : "BoardingSlider"} screenOptions={{ headerShown: false }}>
-                            <Stack.Screen name="BoardingSlider" component={BoardingSlider} />
-                            <Stack.Screen name="Login" component={Login} />
-                            <Stack.Screen name="Register" component={Register} />
-                            <Stack.Screen name="UITab" component={UITab} />
-                            <Stack.Screen name="Cart" component={Cart} />
-                            <Stack.Screen name="ProductDetail" component={ProductDetail} />
-                            <Stack.Screen name="Store" component={Store} />
-                            <Stack.Screen name="DetailStore" component={DetailStore} />
-                            <Stack.Screen name="Order" component={Order} />
-                            <Stack.Screen name="IngredientSale" component={IngredientSale} />
-                            <Stack.Screen name="TapRecipe" component={TapRecipe} />
-                            <Stack.Screen name="TapRecipeStore" component={TapRecipeStore} />
-                        </Stack.Navigator>
-                    </NavigationContainer>
-                </MyContext.Provider>
-            </Provider>
-        )
-    };
-}
+    return (
+        <Provider store={store}>
+            <MyContext.Provider value={{ listdata, shop,listuser }}>
+                <NavigationContainer>
+                    <Stack.Navigator initialRouteName={isLogin ? "UITab" : "BoardingSlider"} screenOptions={{ headerShown: false }}>
+                        <Stack.Screen name="BoardingSlider" component={BoardingSlider} />
+                        <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen name="Register" component={Register} />
+                        <Stack.Screen name="UITab" component={UITab} />
+                        <Stack.Screen name="Cart" component={Cart} />
+                        <Stack.Screen name="ProductDetail" component={ProductDetail} />
+                        <Stack.Screen name="Store" component={Store} />
+                        <Stack.Screen name="DetailStore" component={DetailStore} />
+                        <Stack.Screen name="Order" component={Order} />
+                        <Stack.Screen name="IngredientSale" component={IngredientSale} />
+                        <Stack.Screen name="TapRecipe" component={TapRecipe} />
+                        <Stack.Screen name="TapRecipeStore" component={TapRecipeStore} />
+                        <Stack.Screen name="Address" component={Address} />
+                        <Stack.Screen name="MyAccount" component={MyAccount} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </MyContext.Provider>
+        </Provider>
+    )
+};
 export default App;

@@ -17,7 +17,7 @@ function StackProfile(props) {
         
             <Stack.Navigator initialRouteName="Profile"  screenOptions={{headerShown:false}}>
                 <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="MyAccount" component={MyAccount} />
+                {/* <Stack.Screen name="MyAccount" component={MyAccount} /> */}
                 <Stack.Screen name="Address" component={Address} />
                 <Stack.Screen name="AddAddress" component={AddAddress} />
                 <Stack.Screen name="EditAdress" component={EditAdress} />

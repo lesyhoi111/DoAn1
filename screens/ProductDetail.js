@@ -18,7 +18,7 @@ const ProductDetail = (props) => {
     const { itemDetail, shopOfPro } = route.params
     const [proOfShop, setProOfShop] = useState([]);
     const [follow, setFollow] = useState(false)
-    const { listdata, shop } = useContext(MyContext);
+    const { listdata, shop,listuser } = useContext(MyContext);
     const [number, setNumber] = useState(1);
     const [shopPro, setShopPro] = useState(shopOfPro);
     const user = useSelector((state) => state.CurentUser)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, FlatList, StyleSheet, SafeAreaView, View, ImageBackground, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,8 +8,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ModalAddress from './components/ModalAddress';
 import ModalVoucher from './components/ModalVoucher';
 import Color from '../src/Color';
+import { MyContext } from '../App';
 import { useSelector } from "react-redux";
 import { collection, query, documentId, getDocs, doc, where } from "firebase/firestore";
+import { auth } from '../firebase/firebase'
 import { db } from '../firebase/index'
 let itemAddress;
 let itemVoucher;
@@ -20,13 +22,51 @@ const Order = (props) => {
     const [isloading, setIsloading] = useState(false);
     const [visibleVoucher, setVisibleVoucher] = useState(false);
     const [listAdd, setListAdd] = useState([]);
+    const [listVou, setListVou] = useState([]);
+
+    const [myuser,setMyuser]=useState({
+        id:"",
+        ten: "",
+        email: "",
+        password: "",
+        ngaythamgia: "",
+        magiamgiadadung: [],
+        sdt: "00",
+        ngaysinh: "",
+        sotien: 0,
+        uid:""
+      })
+    const user = auth.currentUser;
+    const { listdata,shop,listuser } = useContext(MyContext);
+
     useEffect(()=>{
+        getlistVou();
         getlistAdd();
     },[])
 
+    const getlistVou = async () => {
+        await setMyuser( listuser.find((item)=>{console.log(item); return item.uid==user.uid}))
+        const dataFb = myuser.magiamgiadadung;
+        const listid = Object.keys(dataFb);
+        try {
+          const CollectionRef = collection(db, "MAGIAMGIA");
+          const Query = query(CollectionRef);
+          const querySnapshot = await getDocs(Query);
+          const result = await querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setTimeout(() => {
+            setListVou(result.filter((item) => { console.log(item) ;return listid.includes(item.id) }))
+            // setLoading(false)
+          }, 2000)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    
     const getlistAdd = async () => {
         try {
-          console.log("getlistAdd1")
           const khachhangDocRef = doc(db, "KHACHHANG", "R3XHZJR4TzNnEMm7ldOX");
           const giohangCollectionRef = collection(khachhangDocRef, "DIACHIGIAOHANG");
           const querySnapshot = await getDocs(giohangCollectionRef);
@@ -35,7 +75,6 @@ const Order = (props) => {
             ...doc.data()
           }));
           setListAdd(result);
-          console.log("getlistmatp")
         } catch (error) {
           console.error(error)
         }
@@ -104,6 +143,7 @@ const Order = (props) => {
             visible={visibleVoucher}
             onClose={() => setVisibleVoucher(false)}
             onTrue={()=>{updateVou(itemVoucher)}}
+            listVou={listVou}
         />
             <ScrollView style={{ backgroundColor: 'white' }}>
                 <TouchableOpacity style={styles.boxLocation} onPress={()=>setVisible(true)}>

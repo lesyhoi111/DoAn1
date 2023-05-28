@@ -20,8 +20,9 @@ function Login(props) {
     //     Keyboard.addListener(('keyboardDidShow'), () => setKeyBoardIsShow(true))
     //     Keyboard.addListener(('keyboardDidHide'), () => setKeyBoardIsShow(false))
     // })
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('nvd501152@gmail.com')
+    const [password, setPassword] = useState('123456')
+
     const [errorEmail, setErrorEmail] = useState('')
     const [errorPassword, setErrorPassword] = useState('')
     const [errorRePassword, setErrorRePassword] = useState('')
@@ -75,7 +76,10 @@ function Login(props) {
 
             <View style={styles.center}>
                 <Text style={styles.text_center}>Email:</Text>
-                <TextInput placeholder='example@gmail.com' placeholderTextColor='#6E6E6E' style={styles.text_input}
+                <TextInput placeholder='example@gmail.com' 
+                placeholderTextColor='#6E6E6E'
+                value={email} 
+                style={styles.text_input}
                     onChangeText={(text) => {
                         setEmail(text)
                         setErrorEmail(isValidEmail(text) ? '' : 'Email is not in correct format')
@@ -84,7 +88,11 @@ function Login(props) {
                 <View style={{ height: 1, backgroundColor: '#5DCCF5', marginHorizontal: 20 }}></View>
                 <Text style={{ color: 'red', paddingLeft: 20, marginVertical: 7 }}>{errorEmail}</Text>
                 <Text style={styles.text_center}>Password:</Text>
-                <TextInput placeholder='Enter your password' placeholderTextColor='#6E6E6E' style={styles.text_input} secureTextEntry={true}
+                <TextInput 
+                placeholder='Enter your password' 
+                placeholderTextColor='#6E6E6E' 
+                value={password} 
+                style={styles.text_input} secureTextEntry={true}
                     onChangeText={(text) => {
                         setPassword(text)
                         setErrorPassword(isValidPass(text) ? '' : 'Password must be at least 6 characters')

@@ -67,9 +67,12 @@ function Register(props) {
       magiamgiadadung: [],
       sdt: "",
       ngaysinh: "",
-      sotien: "",
-      cuahangdangtheodoi:[]
+      cuahangdangtheodoi:[],
+      sotien: 0,
     });
+    const diaChiRef = await addDoc(collection(docRef, "DIACHIGIAOHANG"));
+    const donHangRef = await addDoc(collection(docRef, "DONHANG"));
+    const gioHangRef = await addDoc(collection(docRef, "GIOHANG"));
   }
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text,  View,  Alert, } from 'react-native';
+import { StyleSheet, Text,  View,  Alert } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Color from '../../src/Color'
 import { SliderBox } from "react-native-image-slider-box"

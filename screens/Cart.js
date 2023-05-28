@@ -15,7 +15,7 @@ let result=[];
 const Cart = (props) => {
   const { navigation } = props
   // const [listId, setListId] = useState([]);
-  const { listdata,shop } = useContext(MyContext);
+  const { listdata,shop,listuser } = useContext(MyContext);
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const items = useSelector(state => state.cart.items);
@@ -86,7 +86,7 @@ const Cart = (props) => {
         setData(thucphamList);
         console.log(Data)
         setLoading(false)
-        },2000)
+        },1000)
     } catch (error) {
       console.error(error)
     }
