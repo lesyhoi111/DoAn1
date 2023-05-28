@@ -30,7 +30,7 @@ function ItemIngredientSale(props) {
                         <Icon name='circle' style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange') }}></Icon>
                         <Text style={{ color: item.trangthai == 'Available' ? 'green' : (item.trangthai == 'Sold-out' ? 'red' : 'orange'), marginLeft: 5, fontSize: 14 }}>{item.trangthai} </Text>
                     </View>
-                    <Text style={styles.TextPrice}>{item.giagoc.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                    <Text style={styles.TextPrice}>{item.giagoc}</Text>
                     <View style={styles.boxStar}>
                         {Array(5).fill(0).map((_, id) => (<AntIcon key={id} name='star' style={[styles.star, { color: ((id + 1) <= item.sosao) ? color.colorStar : color.placeHoder }]}></AntIcon>))}
                         <Text>{item.sosao}</Text>

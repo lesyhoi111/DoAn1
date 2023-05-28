@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, Image, StyleSheet, FlatList, View, ScrollView, ImageBackground, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import { Text, Image, StyleSheet, FlatList, View, ScrollView, ImageBackground, Dimensions, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
 import color from '../src/Color';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AntIcon from 'react-native-vector-icons/AntDesign';
@@ -9,6 +9,9 @@ import ListComment from './components/ListComment'
 import ItemIngredientSale from './components/ItemIngredientSale'
 import { DATA } from './components/DATA'
 import { MyContext } from '../App';
+import { collection, query, where, getDoc, orderBy, limit, setDoc, doc, db, updateDoc, arrayUnion, arrayRemove } from "../firebase/firebase";
+import { useSelector } from 'react-redux';
+
 const { width } = Dimensions.get('window');
 const ProductDetail = (props) => {
     const { navigation, route } = props
@@ -18,13 +21,12 @@ const ProductDetail = (props) => {
     const { listdata, shop } = useContext(MyContext);
     const [number, setNumber] = useState(1);
     const [shopPro, setShopPro] = useState(shopOfPro);
-
+    const user = useSelector((state) => state.CurentUser)
     useEffect(() => {
         if (Object.keys(shopOfPro).length == 0) {
             getShop()
         }
-        console.log(listdata.length)
-        setProOfShop(listdata.filter((item) => {  return item.mach == shopPro.id }))
+        setProOfShop(listdata.filter((item) => { return item.mach == shopPro.id }))
     }, [])
 
     const getShop = () => {
@@ -62,7 +64,58 @@ const ProductDetail = (props) => {
     const handleNumberPlus = () => {
         setNumber(number + 1)
     }
+    useEffect(() => {
+        const handleGetFollowedStore = async () => {
+            const docRef = doc(db, "KHACHHANG", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const listStore = docSnap.data().cuahangdangtheodoi;
+                const isFollow = listStore.find(i => i === itemDetail.mach)
+                if (isFollow === itemDetail.mach) {
+                    setFollow(true)
+                }
+                else {
+                    setFollow(false)
+                }
+            }
+        }
+        handleGetFollowedStore();
+    }, [])
 
+
+    const handleToggleFollowedStore = async () => {
+        const followStoreRef = doc(db, 'KHACHHANG', user.uid);
+        if (follow) {
+            await updateDoc(followStoreRef, {
+                cuahangdangtheodoi: arrayRemove(itemDetail.mach),
+            })
+            setFollow(false)
+        }
+        else {
+            await updateDoc(followStoreRef, {
+                cuahangdangtheodoi: arrayUnion(itemDetail.mach),
+            })
+            setFollow(true)
+        }
+    }
+ 
+    const handleAddToCart = async (item) => {
+        const docRef = await setDoc(doc(db, `KHACHHANG/${user.uid}/GIOHANG`, item.id), {
+            image: item.image,
+            soluong: number,
+            ten: item.ten,
+            giagoc: item.giagoc,
+            giamgia: item.giamgia
+        })
+            .then(ToastAndroid.showWithGravity(
+                'Đã thêm sản phẩm vào giỏ hàng',
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+            ))
+            .catch((error) => {
+                console.log(error)
+            });
+    }
 
     return (
         <View style={styles.container}>
@@ -90,7 +143,7 @@ const ProductDetail = (props) => {
                         {Array(5).fill(0).map((_, id) => (<AntIcon key={id} name='star' style={[styles.star, { color: ((id + 1) <= itemDetail.sosao) ? color.colorStar : color.placeHoder }]}></AntIcon>))}
                         <Text style={{ marginLeft: 5, fontSize: 20 }}>{itemDetail.sosao.toFixed(1)}</Text>
                         <View style={{ width: 1, height: '100%', backgroundColor: '#AAAAAA', marginHorizontal: 10 }}></View>
-                        <Text style={{ fontSize: 15, alignSelf: 'center' }}>{itemDetail.soluongdaban} Đã Bán</Text>
+                        <Text style={{ fontSize: 15, alignSelf: 'center', color: '#333' }}>{itemDetail.soluongdaban} Đã Bán</Text>
                     </View>
                     <View style={styles.priceRow}>
                         <Text style={styles.price}>{(itemDetail.giagoc * (100 - itemDetail.giamgia) / 100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
@@ -106,8 +159,8 @@ const ProductDetail = (props) => {
                     </View>
                     <Text style={styles.originalPrice}>{itemDetail.giagoc.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: 'white', marginVertical: 7, padding: 10, flexDirection: 'row' }} 
-                onPress={() => navigation.navigate('Store',{shop:shopPro})}>
+                <TouchableOpacity style={{ backgroundColor: 'white', marginVertical: 7, padding: 10, flexDirection: 'row' }}
+                    onPress={() => navigation.navigate('Store', { shop: shopPro })}>
                     <Image style={styles.imgShop} source={{ uri: shopPro.image }}></Image>
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={{ fontSize: 18, color: 'black' }}>{shopPro.ten}</Text>
@@ -120,15 +173,15 @@ const ProductDetail = (props) => {
                                 style={{ marginRight: 5, alignSelf: "center", marginLeft: 2 }}
                             />
                             <View style={{ width: 1, height: '100%', backgroundColor: '#AAAAAA', marginHorizontal: 5 }}></View>
-                            <Text>{shopPro.sosanpham} sản phẩm</Text>
+                            <Text style={{ fontSize: 18, color: 'black' }}>{shopPro.sosanpham} sản phẩm</Text>
                         </View>
                     </View>
                     <View flex={1}></View>
-                    <TouchableOpacity style={{ alignSelf: 'center', paddingVertical: 5, borderWidth: 1, borderColor: follow == false ? 'orange' : '#AAAAAA' }} onPress={() => setFollow(!follow)}>
-                        {follow == false ?
+                    <TouchableOpacity style={{ alignSelf: 'center', paddingVertical: 5, borderWidth: 1, borderColor: follow == false ? 'orange' : '#AAAAAA' }} onPress={handleToggleFollowedStore}>
+                        {!follow?
                             <Text style={{ color: 'black', marginHorizontal: 15 }}>THEO DÕI</Text>
                             :
-                            <Text style={{ marginHorizontal: 5 }}>ĐÃ THEO DÕI</Text>
+                            <Text style={{ color: 'black', marginHorizontal: 5 }}>ĐÃ THEO DÕI</Text>
                         }
                     </TouchableOpacity>
                 </TouchableOpacity>
@@ -164,12 +217,12 @@ const ProductDetail = (props) => {
                     onPress={handleNumberSub}>
                     <Icon name="minus" style={styles.iconAddAndSub} />
                 </TouchableOpacity>
-                <Text style={styles.numberOfProduct}>1</Text>
+                <Text style={styles.numberOfProduct}>{number}</Text>
                 <TouchableOpacity style={styles.btnaddSub}
                     onPress={handleNumberPlus}>
                     <Icon name="plus" style={styles.iconAddAndSub} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnAddToCart}>
+                <TouchableOpacity onPress={() => handleAddToCart(itemDetail)} style={styles.btnAddToCart}>
                     <Text style={styles.btnPrice}>{(itemDetail.giagoc * (100 - itemDetail.giamgia) / 100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                     <Text style={styles.btnText}>THÊM VÀO GIỎ HÀNG</Text>
                 </TouchableOpacity>
@@ -256,7 +309,8 @@ const styles = StyleSheet.create({
     iconsaveAndHeart: {
         fontSize: 18,
         paddingHorizontal: 5,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        color: '#333'
     },
     btnshareAndHeart: {
         margin: 2,

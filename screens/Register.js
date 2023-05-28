@@ -68,6 +68,7 @@ function Register(props) {
       sdt: "",
       ngaysinh: "",
       sotien: "",
+      cuahangdangtheodoi:[]
     });
   }
 

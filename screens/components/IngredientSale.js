@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, SafeAreaView, StyleSheet, Text, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Pressable, FlatList } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Pressable, FlatList, ToastAndroid } from 'react-native';
 import ItemIngredientSale from './ItemIngredientSale'
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy, limit, addDoc, doc, setDoc,updateDoc } from "firebase/firestore";
 import { db } from '../../firebase/index'
 import color from '../../src/Color';
 import { useSelector } from 'react-redux';
@@ -13,8 +13,7 @@ function IngredientSale(props) {
     const [listdata, setListdata] = useState([])
     const [loading, setLoading] = useState(false)
     const user = useSelector((state) =>state.CurentUser)
-    
-    
+
     useEffect(() => {
         getData()
 
@@ -50,12 +49,24 @@ function IngredientSale(props) {
             id: '001',
         },
     ];
-        const handleAddToCart = async(itemId)=>{
-            const docRef = await addDoc(collection(db, `KHACHHANG/${user.uid}/GIOHANG`), {
-                name: "Tokyo",
-                country: "Japan"
+        const handleAddToCart = async(item)=>{
+            const docRef = await setDoc(doc(db, `KHACHHANG/${user.uid}/GIOHANG`, item.id), {
+                image: item.image,
+                soluong: 1,
+                ten:item.ten,
+                giagoc: item.giagoc,
+                giamgia: item.giamgia
+              })
+              .then(ToastAndroid.showWithGravity(
+                'Đã thêm sản phẩm vào giỏ hàng',
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+            ))
+              .catch((error) => {
+                console.log(error)
               });
         }
+      
     return (
 
         <View style={styles.container}>
@@ -69,7 +80,7 @@ function IngredientSale(props) {
                 <FlatList horizontal={true}
                     data={listdata}
                     renderItem={({ item }) => <ItemIngredientSale item={item} short={false}
-                    onPressCartPlus={()=>Alert.alert('helo')}
+                    onPressCartPlus={()=>handleAddToCart(item)}
                         onPress={() => navigation.navigate('ProductDetail',
                             {
                                 itemDetail: item,

@@ -1,10 +1,11 @@
 import React, { PureComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, Pressable, ViewBase, FlatList, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Pressable, ViewBase, FlatList, Image, TouchableOpacity, ToastAndroid } from 'react-native'
 import color from '../../src/Color';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy, limit, setDoc, doc } from "firebase/firestore";
 import { db } from '../../firebase/index'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
 const listTab = ['Tất cả', 'Thịt,cá,trứng,hải sản', 'Rau,củ,quả,trái cây', 'Dầu ăn,nước chấm,gia vị', 'Nước ngọt,bia,sữa', 'Gạo,bột,đồ khô', 'Kem,thực phẩm đông lạnh'];
 function TapRecipe(props) {
   const { navigation } = props
@@ -61,7 +62,6 @@ function TapRecipe(props) {
     const list = []
     querySnapshot.forEach((doc) => {
       list.push({ id: doc.id, ...doc.data() })
-      console.log(doc.data().ten)
     });
     setTimeout(() => {
       setListdata(list)
@@ -82,7 +82,7 @@ function TapRecipe(props) {
     },
   ];
 
-  const renderlist = ({ item }) => {
+  const renderlist = ({ item,onPressCartPlus }) => {
     return (
       <TouchableOpacity
         style={styles.boxitem}
@@ -109,7 +109,7 @@ function TapRecipe(props) {
             {/* <View style={styles.iconbox}> */}
             <View flex={1} ></View>
             <TouchableOpacity style={styles.addCart} onPress={() => { setAddCard(!addcard) }}>
-              <MaterialCommunityIcons name='cart-plus' style={{ color: 'black', fontSize: 25 }}></MaterialCommunityIcons>
+              <MaterialCommunityIcons onPress={onPressCartPlus} name='cart-plus' style={{ color: 'black', fontSize: 25 }}></MaterialCommunityIcons>
             </TouchableOpacity>
             {/* </View> */}
           </View>
@@ -117,6 +117,24 @@ function TapRecipe(props) {
       </TouchableOpacity>
     )
   }
+  const user = useSelector((state) =>state.CurentUser)
+  const handleAddToCart = async(item)=>{
+    const docRef = await setDoc(doc(db, `KHACHHANG/${user.uid}/GIOHANG`, item.id), {
+        image: item.image,
+        soluong: 1,
+        ten:item.ten,
+        giagoc: item.giagoc,
+        giamgia: item.giamgia
+      })
+      .then(ToastAndroid.showWithGravity(
+        'Đã thêm sản phẩm vào giỏ hàng',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+    ))
+      .catch((error) => {
+        console.log(error)
+      });
+}
   return (
     <View>
       <View style={{ marginTop: 5, marginHorizontal: 5 }}>
@@ -134,7 +152,7 @@ function TapRecipe(props) {
       {loading == false ?
         <FlatList showsVerticalScrollIndicator={false}
           scrollEnabled={false}
-          renderItem={({ item }) => renderlist({ item })}
+          renderItem={({ item }) => renderlist({item, onPressCartPlus: () => handleAddToCart(item)})}
           data={listdataDis}
           keyExtractor={item => item.id}>
         </FlatList>

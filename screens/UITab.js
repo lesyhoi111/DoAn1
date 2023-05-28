@@ -23,7 +23,7 @@ function UITab() {
         try {
             const userCredential = await AsyncStorage.getItem('user');
             if (userCredential) {
-                dispatch(addUser(userCredential))
+                dispatch(addUser(JSON.parse(userCredential)))
             } 
         } catch (error) {
             console.log('Error retrieving user credential:', error);
