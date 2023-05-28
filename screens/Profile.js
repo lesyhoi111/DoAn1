@@ -13,6 +13,8 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {auth,db} from "../firebase/firebase"
 import { useNavigation } from '@react-navigation/native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const { width, height } = Dimensions.get('window');
 function Profile(props) {
     const navigationBottom = useNavigation();
@@ -65,6 +67,18 @@ function Profile(props) {
     //       }
     //   }
 
+// function Profile(props) {
+//     const {navigation,route}=props
+//     const {navigate,goBack}=navigation
+    const removeItemFromStorage = async (key) => {
+        try {
+          await AsyncStorage.removeItem(key);
+          console.log('Item removed successfully.');
+          navigation.navigate('Login')
+        } catch (error) {
+          console.log('Error removing item from AsyncStorage:', error);
+        }
+      };
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground source={require('../src/images/ronaldo.jpeg')} resizeMode="cover" style={{ height: 160 }}>
@@ -147,8 +161,8 @@ function Profile(props) {
                         <Icon name='chevron-right' size={20} color={'#a9a9a9'}></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => { auth.signOut(); navigation.navigate('Login') }}
-                        style={{ flexDirection: 'row', padding: 20, paddingTop: 0 }}>
+                    onPress={()=>removeItemFromStorage('user')}
+                    style={{ flexDirection: 'row',padding:20,paddingTop:0}}>
                         <MaterialCommunityIcons name='logout' size={25} color={'red'}></MaterialCommunityIcons>
                         <View style={{ flex: 1, paddingLeft: 15 }}>
                             <Text style={{ color: 'red', fontSize: 20, fontWeight: '500' }}>Log out</Text>

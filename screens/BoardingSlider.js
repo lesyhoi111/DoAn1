@@ -1,7 +1,6 @@
 import  React,{useState,useRef, useEffect} from 'react';
 import { StatusBar, Animated, Text, Image, View, StyleSheet, Dimensions, FlatList,TouchableOpacity } from 'react-native';
 const {width, height} = Dimensions.get('screen');
-import {auth, onAuthStateChanged } from '../firebase/firebase'
 
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
@@ -126,21 +125,6 @@ export default function BoardingSlider(props) {
   };
   const flatListRef = useRef(null);
   const [skipPressed, setSkipPressed] = useState(false);
-
-  useEffect(()=>{
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const uid = user.uid;
-        navigation.navigate('UITab')
-
-        // ...
-      } else {
-        console.log('log out')
-      }
-    });
-  },[navigation])
   return (
     <View style={styles.container}>
       <StatusBar hidden />

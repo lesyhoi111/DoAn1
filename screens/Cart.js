@@ -151,6 +151,7 @@ const Cart = (props) => {
     })
     return itemThis.soluong
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>

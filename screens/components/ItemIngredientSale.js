@@ -8,7 +8,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 
 function ItemIngredientSale(props) {
-    const { short, item, onPress } = props
+    const { short, item, onPress, onPressCartPlus } = props
 
 
     return (
@@ -21,7 +21,7 @@ function ItemIngredientSale(props) {
                     <View style={styles.percentTage}>
                         <Text style={{ color: 'white' }}>{item.giamgia}%</Text>
                     </View>}
-                <TouchableOpacity style={[styles.addCart, { top: short == true ? 50 : 60, left: short == true ? 95 : 105, }]}>
+                <TouchableOpacity onPress={onPressCartPlus} style={[styles.addCart, { top: short == true ? 50 : 60, left: short == true ? 95 : 105, }]}>
                     <MaterialCommunityIcons name='cart-plus' style={{ color: 'black', fontSize: 25 }}></MaterialCommunityIcons>
                 </TouchableOpacity>
                 <View style={styles.titleCard}>

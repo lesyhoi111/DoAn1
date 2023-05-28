@@ -21,6 +21,8 @@ import { db } from './firebase/index'
 import store from "./screens/components/Redux/Store";
 import { Provider } from "react-redux";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Lottie from 'lottie-react-native';
 
 let listdata=[];
 let shop=[];
@@ -29,6 +31,29 @@ const Stack = createNativeStackNavigator();
 export const MyContext = createContext();
 
 function App(props) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLogin, setIsLogin] = useState(false)
+   
+    useEffect(() => {
+        const getUserCredential = async () => {
+            try {
+                const userCredential = await AsyncStorage.getItem('user');
+                if (userCredential) {
+                    setIsLogin(true);
+                    console.log(userCredential);
+                } else {
+                    setIsLogin(false);
+                    console.log('you signed out');
+                }
+            } catch (error) {
+                console.log('Error retrieving user credential:', error);
+            } finally {
+                setIsLoading(false); // Đánh dấu quá trình kiểm tra đã hoàn tất
+            }
+        };
+        getUserCredential();
+    }, []);
+
 
     // const [listdata, setListdata] = useState();
     // const [shop, setShop] = useState();
@@ -47,7 +72,6 @@ function App(props) {
             const results = [];
             querySnapshot.forEach((doc) => {
                 listdata.push({ id: doc.id, ...doc.data() });
-                console.log(doc.id)
             });
         } catch (error) {
             console.error(error);
@@ -90,7 +114,7 @@ function App(props) {
         <Provider store={store}>
             <MyContext.Provider value={{ listdata, shop,listuser }}>
                 <NavigationContainer>
-                    <Stack.Navigator initialRouteName="BoardingSlider" screenOptions={{ headerShown: false }}>
+                    <Stack.Navigator initialRouteName={isLogin ? "UITab" : "BoardingSlider"} screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="BoardingSlider" component={BoardingSlider} />
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />

@@ -6,60 +6,77 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Color from '../src/Color';
 import { Picker } from '@react-native-picker/picker';
 import color from '../src/Color';
-const cityData = ['Hà Nội', 'TP.HCM', 'Đà Nẵng'];
-const districtData = {
-    'Hà Nội': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ'],
-    'TP.HCM': ['Quận 1', 'Quận 4', 'Quận 3', 'Quận 5', 'Quận 6', 'Quận 7','Quận 8','Quận 10','Quận 11','Quận 12','Thành phố Thủ Đức','Quận Bình Tân','	Quận Bình Thạnh','Quận Gò Vấp','Quận Phú Nhuận','Quận Tân Bình','Quận Tân Phú','Huyện Bình Chánh','Huyện Cần Giờ','Huyện Củ Chi','Huyện Hóc Môn','Huyện Nhà Bè'],
-    'Đà Nẵng': ['Hải Châu', 'Thanh Khê', 'Sơn Trà'],
-};
-const wardData = {
-    'Ba Đình': ['Phúc Xá', 'Ngọc Hà', 'Liễu Giai'],
-    'Hoàn Kiếm': ['Hàng Bài', 'Hàng Trống', 'Cửa Đông'],
-    'Tây Hồ': ['Quảng An', 'Xuân La', 'Tứ Liên'],
-    'Thành phố Thủ Đức': ['Phường An Khánh', 'Phường An Lợi Đông', 'Phường An Phú','Phường Bình Chiểu'],
-    'Quận 1': ['Bến Nghé', 'Bến Thành', 'Cầu Kho'],
-    'Quận 2': ['Thảo Điền', 'An Phú', 'Bình An'],
-    'Quận 3': ['Nguyễn Thông', 'Võ Thị Sáu', 'Nam Kỳ Khởi Nghĩa'],
-    'Hải Châu': ['Thanh Bình', 'Thanh Lộc', 'Hòa Cường Bắc'],
-    'Thanh Khê': ['Thanh Khê Tây', 'Thanh Khê Đông', 'An Khê'],
-    'Sơn Trà': ['Mân Thái', 'An Hải Bắc', 'An Hải Đông'],
-};
+import axios from 'axios';
 function AddAddress(props) {
     const { navigation, route } = props
     const [isEnabled, setIsEnabled] = useState(false);
-    const [city, setCity] = useState('');
-    const [district, setDistrict] = useState('');
-    const [ward, setWard] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [province, setProvince] = useState([])
+    const [district, setDistrict] = useState([])
+    const [wards, setWards] = useState([])
+    const [provinceCode, setProvinceCode] = useState()
+    const [districtCode, setDistrictCode] = useState()
+    const [wardCode, setWardCode] = useState()
+    const [provinceName, setProvinceName] = useState('')
+    const [districtName, setDistrictName] = useState('')
+    const [wardName, setWardName] = useState('')
     const [address, setAdress] = useState('')
-    const [focus, setFocus] = useState(false)
-
+    const [showModalAddress, setShowModalAddress] = useState(false);
+    const [pickerFocused, setPickerFocused] = useState(false)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 
-    const handleCityChange = (city) => {
-        setCity(city);
-        setDistrict('');
-        setWard('');
-    };
+    const getProvince = () => {
+        axios.get('https://provinces.open-api.vn/api/?depth=1')
+            .then(response => {
+                setProvince(response.data)
+            })
+            .catch(error => {
+                console.log('lỗi:', error);
+            });
 
-    const handleDistrictChange = (district) => {
-        setDistrict(district);
-        setWard('');
-    };
+    }
 
-    const handleWardChange = (ward) => {
-        setWard(ward);
-    };
+    const getDistrict = () => {
+        if (provinceCode) {
+            axios.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`)
+                .then(response => setDistrict(response.data.districts))
+                .catch(error => {
+                    console.log('lỗi:', error);
+                });
+        }
+    }
+    const getWard = () => {
+        if (districtCode) {
+            axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`)
+                .then(response => setWards(response.data.wards))
+                .catch(error => {
+                    console.log('lỗi:', error);
+                });
+        }
+    }
+    useEffect(() => {
 
-    const handleSave = () => {
-        setShowModal(false);
-        setAdress(`${ward}, ${district}, ${city}`);
-        setCity('');
-        setDistrict('');
-        setWard('');
-        console.log(address);
-    };
+        if (provinceCode && districtCode && wardCode) {
+
+            const pvname = province.filter(item => item.code === provinceCode)
+            setProvinceName(pvname[0].name)
+            const dtname = district.filter(item => item.code === districtCode)
+            setDistrictName(dtname[0].name)
+            const wname = wards.filter(item => item.code === wardCode)
+            setWardName(wname[0].name)
+        }
+    }, [provinceCode, districtCode, wardCode])
+
+
+    const handleSubmit = () => {
+        if (provinceCode && districtCode && wardCode) {
+            setShowModalAddress(false);
+            setAdress(wardName + ', ' + districtName + ', ' + provinceName)
+        }
+        else {
+            Alert.alert('Vui lòng chọn đầy đủ thông tin')
+        }
+    }
     return (
         <ScrollView>
             <SafeAreaView>
@@ -73,52 +90,84 @@ function AddAddress(props) {
                     <TextInput style={styles.TextInput} placeholder='Số điện thoại' placeholderTextColor={color.placeHoder} />
                     <Text style={styles.title}>Địa chỉ</Text>
                     <View style={styles.TextInput}>
-                        <Text style={{ fontSize: 16, color:address?'#333':color.placeHoder,paddingVertical:13 }} onPress={()=>setShowModal(true)}>{address || 'Tỉnh/Thành Phố, Quận/Huyện, Phường/Xã'}</Text>
+                        <Text style={{ fontSize: 16, color: address ? '#333' : color.placeHoder, paddingVertical: 13 }} onPress={() => setShowModalAddress(true)}>{address || 'Tỉnh/Thành Phố, Quận/Huyện, Phường/Xã'}</Text>
                         <Ionicons name='chevron-forward-outline' size={22} color={'black'}></Ionicons>
 
                     </View>
                     <TextInput style={styles.TextInput} placeholder='Tên đường, Tòa nhà, Số nhà' placeholderTextColor={color.placeHoder} />
                     <Modal
-                        visible={showModal}
+                        visible={showModalAddress}
                         transparent
                         animationType="slide"
                     >
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
-                                <Text>Tỉnh/ Thành phố</Text>
+                                <Text style={styles.textModal}>Tỉnh/ Thành phố</Text>
                                 <Picker
-                                    selectedValue={city}
-                                    onValueChange={(itemValue) => handleCityChange(itemValue)}
-                                >
-                                    {cityData.map((item, index) => (
-                                        <Picker.Item key={index} label={item} value={item} />
-                                    ))}
+                                    dropdownIconColor={'#FF6868'}
+                                    dropdownIconRippleColor={'#FF6868'}
+                                    prompt='--Chọn tỉnh/ Thành phố--'
+                                    placeholder='--Chọn tỉnh/ Thành phố--'
+                                    placeholderStyle={{
+                                        color: "grey",
+                                    }}
+                                    style={{ color: '#333', backgroundColor: '#EEEEEE' }}
+                                    onFocus={getProvince}
+                                    onBlur={() => setPickerFocused(false)}
+                                    selectedValue={provinceCode}
+                                    onValueChange={i => {
+                                        setProvinceCode(i);
+                                        setDistrict([])
+                                        setWards([])
+                                        setDistrictCode(null),
+                                            setWardCode(null)
+                                    }
+                                    } >
+                                    {province.map(item => <Picker.Item style={{ backgroundColor: '#FFFFFF', color: '#000000' }} label={province.length > 0 ? item.name : placeholder} value={item.code} key={item} enabled={!pickerFocused} />)}
                                 </Picker>
-                                <Text>Quận/Huyện</Text>
+                                <Text style={styles.textModal}>Quận/Huyện</Text>
                                 <Picker
-                                    selectedValue={district}
-                                    onValueChange={(itemValue) => handleDistrictChange(itemValue)}
-                                >
-                                    {districtData[city]?.map((item, index) => (
-                                        <Picker.Item key={index} label={item} value={item} />
-                                    ))}
+                                    prompt='--Chọn Quận/ Huyện--'
+                                    placeholder='--Chọn Quận/ Huyện--'
+                                    placeholderStyle={{
+                                        color: "grey",
+                                    }}
+                                    dropdownIconColor={'#FF6868'}
+                                    dropdownIconRippleColor={'#FF6868'}
+                                    onFocus={getDistrict}
+                                    style={{ color: '#333', backgroundColor: '#EEEEEE' }}
+                                    selectedValue={districtCode}
+                                    onValueChange={i => {
+                                        setDistrictCode(i);
+                                        setWards([])
+                                        setWardCode(null)
+                                    }
+                                    } >
+                                    {provinceCode ? district.map(item => <Picker.Item style={{ backgroundColor: '#FFFFFF', color: '#000000' }} label={item.name} value={item.code} key={item} />) : null}
                                 </Picker>
-                                <Text>Phường/Xã</Text>
+                                <Text style={styles.textModal}>Phường/Xã</Text>
                                 <Picker
-                                    selectedValue={ward}
-                                    onValueChange={(itemValue) => handleWardChange(itemValue)}
-                                >
-                                    {wardData[district]?.map((item, index) => (
-                                        <Picker.Item key={index} label={item} value={item} />
-                                    ))}
+                                    prompt='--Chọn Phường/ Xã--'
+                                    placeholder='--Chọn Phường/ Xã--'
+                                    placeholderStyle={{
+                                        color: "grey",
+                                    }}
+                                    dropdownIconColor={'#FF6868'}
+                                    dropdownIconRippleColor={'#FF6868'}
+                                    onFocus={getWard}
+                                    style={{ color: '#333', backgroundColor: '#EEEEEE' }}
+                                    selectedValue={wardCode}
+                                    onValueChange={i => setWardCode(i)
+                                    } >
+                                    {districtCode ? wards.map(item => <Picker.Item style={{ backgroundColor: '#FFFFFF', color: '#000000' }} label={item.name} value={item.code} key={item} />) : null}
                                 </Picker>
                                 <Button
                                     title="Xác nhận"
-                                    onPress={handleSave}
+                                    onPress={handleSubmit}
                                 />
                                 <Button
                                     title="Hủy"
-                                    onPress={() => setShowModal(false)}
+                                    onPress={() => setShowModalAddress(false)}
                                 />
                             </View>
                         </View>
@@ -226,4 +275,8 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 5,
     },
+    textModal: {
+        fontSize: 16,
+        color: '#333'
+    }
 });

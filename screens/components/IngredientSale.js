@@ -5,13 +5,16 @@ import ItemIngredientSale from './ItemIngredientSale'
 import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
 import { db } from '../../firebase/index'
 import color from '../../src/Color';
+import { useSelector } from 'react-redux';
 
 
 function IngredientSale(props) {
     const { navigation } = props
     const [listdata, setListdata] = useState([])
     const [loading, setLoading] = useState(false)
-
+    const user = useSelector((state) =>state.CurentUser)
+    
+    
     useEffect(() => {
         getData()
 
@@ -47,7 +50,12 @@ function IngredientSale(props) {
             id: '001',
         },
     ];
-
+        const handleAddToCart = async(itemId)=>{
+            const docRef = await addDoc(collection(db, `KHACHHANG/${user.uid}/GIOHANG`), {
+                name: "Tokyo",
+                country: "Japan"
+              });
+        }
     return (
 
         <View style={styles.container}>
@@ -61,6 +69,7 @@ function IngredientSale(props) {
                 <FlatList horizontal={true}
                     data={listdata}
                     renderItem={({ item }) => <ItemIngredientSale item={item} short={false}
+                    onPressCartPlus={()=>Alert.alert('helo')}
                         onPress={() => navigation.navigate('ProductDetail',
                             {
                                 itemDetail: item,
