@@ -88,6 +88,7 @@ const ProductDetail = (props) => {
 
 
     const handleToggleFollowedStore = async () => {
+        console.log(user.uid)
         const followStoreRef = doc(db, 'KHACHHANG', user.uid);
         if (follow) {
             await updateDoc(followStoreRef, {

@@ -35,12 +35,39 @@ function App(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [isLogin, setIsLogin] = useState(false)
    
+    // useEffect(() => {
+    //     const getUserCredential = async () => {
+    //         try {
+    //             const userCredential = await AsyncStorage.getItem('user');
+    //             if (userCredential) {
+    //                 setIsLogin(true);
+    //                 console.log(userCredential);
+    //             } else {
+    //                 setIsLogin(false);
+    //                 console.log('you signed out');
+    //             }
+    //         } catch (error) {
+    //             console.log('Error retrieving user credential:', error);
+    //         } finally {
+    //             setIsLoading(false); // Đánh dấu quá trình kiểm tra đã hoàn tất
+    //         }
+    //     };
+    //     getUserCredential();
+    // }, []);
+
+
+    // const [listdata, setListdata] = useState();
+    // const [shop, setShop] = useState();
     useEffect(() => {
+        getData();
+        getListShop();
+        getlistuser();
         const getUserCredential = async () => {
             try {
                 const userCredential = await AsyncStorage.getItem('user');
                 if (userCredential) {
                     setIsLogin(true);
+                    console.error('you signed in');
                     console.log(userCredential);
                 } else {
                     setIsLogin(false);
@@ -53,16 +80,8 @@ function App(props) {
             }
         };
         getUserCredential();
-    }, []);
-
-
-    // const [listdata, setListdata] = useState();
-    // const [shop, setShop] = useState();
-    useEffect(() => {
-        getData();
-        getListShop();
-        getlistuser();
     }, [])
+    
     const getData = async () => {
         console.log("getdata")
         // setLoading(true)
@@ -93,6 +112,7 @@ function App(props) {
             console.error(error)
           }
       }
+
       const getlistuser = async () => {
         try {
         //     const thucphamRef = collection(db, "KHACHHANG");
@@ -113,6 +133,11 @@ function App(props) {
           }
       }
 
+    if (isLoading){
+        return(
+            <View style={{flex:1}}></View>
+        )
+    }else{
     return (
         <Provider store={store}>
             <MyContext.Provider value={{ listdata, shop,listuser }}>
@@ -137,6 +162,6 @@ function App(props) {
                 </NavigationContainer>
             </MyContext.Provider>
         </Provider>
-    )
+    )}
 };
 export default App;

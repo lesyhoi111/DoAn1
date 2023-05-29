@@ -20,7 +20,7 @@ function Login(props) {
     //     Keyboard.addListener(('keyboardDidShow'), () => setKeyBoardIsShow(true))
     //     Keyboard.addListener(('keyboardDidHide'), () => setKeyBoardIsShow(false))
     // })
-    const [email, setEmail] = useState('nvd501152@gmail.com')
+    const [email, setEmail] = useState('20521201@gm.uit.edu.vn')
     const [password, setPassword] = useState('123456')
 
     const [errorEmail, setErrorEmail] = useState('')

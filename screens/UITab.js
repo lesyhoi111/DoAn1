@@ -27,6 +27,7 @@ function UITab() {
         try {
             const userCredential = await AsyncStorage.getItem('user');
             if (userCredential) {
+              console.error(JSON.parse(userCredential));
                 dispatch(addUser(JSON.parse(userCredential)))
             } 
         } catch (error) {
@@ -74,7 +75,7 @@ useEffect(() => {
   // getlistuser();
 })
   return (
-    <UIContext.Provider value={{ myuser, setMyuser }}>
+    
     <Tab.Navigator initialRouteName="Home"  screenOptions={{
         tabBarShowLabel:false,
         headerShown:false,
@@ -111,20 +112,8 @@ useEffect(() => {
             <FontAwesome name="user" color={color} size={35} />
           ),
         }}/>
-        <Tab.Screen name="IngredientSale" component={IngredientSale} options={{
-          tabBarLabel: 'IngredientSale',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="login" color={color} size={35} />
-          ),
-        }}/>
-        <Tab.Screen name="TapRecipe" component={TapRecipe} options={{
-          tabBarLabel: 'TapRecipe',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="login" color={color} size={35} />
-          ),
-        }}/>
     </Tab.Navigator>
-    </UIContext.Provider>
+    
   );
 }
 export default UITab;

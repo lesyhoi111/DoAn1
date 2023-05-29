@@ -12,7 +12,9 @@ import { UIContext } from './UITab';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase"
 import { useNavigation } from '@react-navigation/native';
-
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import { SignOut } from './components/Redux/CurentUserSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
@@ -21,6 +23,7 @@ function Profile(props) {
     const { navigation, route } = props
     const { navigate, goBack } = navigation
     const { loading, setLoading } = useState(true)
+    const dispatch = useDispatch()
     // const { loading, setLoading } = useState(false)
     // const [myuser, setMyuser] = useState({
     //     anhdaidien: "",
@@ -36,7 +39,7 @@ function Profile(props) {
     //     uid: ""
     // })
 
-    const user = auth.currentUser;
+    const user = useSelector((state) => state.CurentUser)
     const { listdata, shop, listuser } = useContext(MyContext);
     const [myuser, setMyuser] = useState({
         anhdaidien: "",
@@ -62,7 +65,7 @@ function Profile(props) {
         const unsubscribe = navigation.addListener('focus', () => {
             console.log("123")
             getlistuser();
-            setMyuser(listuser.find((item) => { return item.uid == user.uid }))
+            setMyuser(listuser.find((item) => { return item.uid == user.id }))
         });
         return unsubscribe;
     }, [navigation]);
@@ -95,6 +98,7 @@ function Profile(props) {
     const removeItemFromStorage = async (key) => {
         try {
             await AsyncStorage.removeItem(key);
+            dispatch(SignOut());
             console.log('Item removed successfully.');
             navigation.navigate('Login')
         } catch (error) {

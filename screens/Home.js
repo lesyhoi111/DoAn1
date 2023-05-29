@@ -6,18 +6,37 @@ import TapRecipe from './components/TapRecipe'
 import SliderImage from './components/SliderImage'
 import Color from '../src/Color'
 import Lottie from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux'
+import { SignOut } from './components/Redux/CurentUserSlice';
 const { width, height } = Dimensions.get('window');
 function Home(props) {
     const {navigation,route}=props
     const {navigate,goBack}=navigation
     const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch()
+
+    const removeItemFromStorage = async (key) => {
+        try {
+            await AsyncStorage.removeItem(key);
+            dispatch(SignOut());
+            console.log('Item removed successfully.');
+            navigation.navigate('Login')
+        } catch (error) {
+            console.log('Error removing item from AsyncStorage:', error);
+        }
+    };
    
     return (
         <ScrollView horizontal={false}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
+                    
                 <Lottie source={require('../src/Lottie/home2.json')} autoPlay loop speed={1}  style={{position:'absolute', height:100, width:100,top:-10,right:-13}}/>
                 <Lottie source={require('../src/Lottie/home1.json')} autoPlay loop speed={1}  style={{position:'absolute', height:300, width:300,top:-45,left:-40}}/>
+                <TouchableOpacity style={{backgroundColor:"red"}} onPress={()=>{removeItemFromStorage("user")}}>
+                        <Text>aloalao</Text>
+                    </TouchableOpacity>
                 <View style={{ marginVertical: 0,flex:4 }}>
                         <Text style={styles.txtheader}>Xin chào!</Text>
                         <Text style={styles.txtheaderbottom}>Bạn muốn mua thực phẩm gì?</Text>
