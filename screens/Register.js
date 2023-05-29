@@ -67,6 +67,7 @@ function Register(props) {
       magiamgiadadung: [],
       sdt: "",
       ngaysinh: "",
+      cuahangdangtheodoi:[],
       sotien: 0,
       uid:""
     });

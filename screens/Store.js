@@ -5,11 +5,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Search from './components/Search';
 import color from '../src/Color';
 import TapRecipeStore from './components/TapRecipeStore'
+import TapRecipe from './components/TapRecipe';
 function Store(props) {
     const { navigation, route } = props
     const { shop } = route.params
 const [search,setSearch] = useState('')
 const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.toLowerCase()))
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -48,8 +50,7 @@ const searched = () =>DATA.filter(item=>item.name.toLowerCase().includes(search.
                 </View>
                  
                 </TouchableOpacity>
-                <TapRecipeStore listTab={['Best sale','All Ingredient', 'Meat,Fish,Egg,Seafood', 'Vegetable,Mushroom,fruit', 'Spice,Cooking oil', 'Beverage,Beer', 'Milk', 'Confectionery']} ></TapRecipeStore>
-                
+                <TapRecipeStore mach={shop.id}></TapRecipeStore>
                  
         </SafeAreaView>
     )
