@@ -9,6 +9,8 @@ import {auth} from "../firebase/firebase"
 import { MyContext } from '../App';
 import Home from './Home'
 import Cart from './Cart'
+import IngredientSale from './components/IngredientSale'
+import TapRecipe from './components/TapRecipe'
 import SearchScreen from './SearchScreen'
 import StackProfile from './StackProfile'
 import Color from '../src/Color' 
@@ -107,6 +109,18 @@ useEffect(() => {
           tabBarLabel: 'StackProfile',
           tabBarIcon: ({ color }) => (
             <FontAwesome name="user" color={color} size={35} />
+          ),
+        }}/>
+        <Tab.Screen name="IngredientSale" component={IngredientSale} options={{
+          tabBarLabel: 'IngredientSale',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="login" color={color} size={35} />
+          ),
+        }}/>
+        <Tab.Screen name="TapRecipe" component={TapRecipe} options={{
+          tabBarLabel: 'TapRecipe',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="login" color={color} size={35} />
           ),
         }}/>
     </Tab.Navigator>

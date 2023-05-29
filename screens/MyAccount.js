@@ -58,7 +58,7 @@ function MyAccount(props) {
   const [visible, setVisible] = useState(false);
   const [visibleAva, setVisibleAva] = useState(false);
   const [image, setImage] = useState(user.anhdaidien);
-  const {  myuser, setMyuser  } = useContext(UIContext);
+  // const {  myuser, setMyuser  } = useContext(UIContext);
   const { listdata, shop, listuser } = useContext(MyContext);
 
   const showDatePicker = () => {
@@ -140,7 +140,7 @@ function MyAccount(props) {
       await getlistuser();
       setTimeout( async() => {
         console.log("trước")
-        await setMyuser(listuser2.find((item) => { return item.uid == user.uid }))
+        // await setMyuser(listuser2.find((item) => { return item.uid == user.uid }))
         navigation.goBack();
       }, 2000);
       Alert.alert("lưu thành công")

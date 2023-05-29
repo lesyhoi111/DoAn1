@@ -15,6 +15,7 @@ import IngredientSale from './screens/components/IngredientSale'
 import TapRecipe from './screens/components/TapRecipe'
 import TapRecipeStore from './screens/components/TapRecipeStore'
 import Address from './screens/Address'
+import Home from './screens/Home'
 import MyAccount from './screens/MyAccount'
 import { collection, query, where, getDocs, orderBy, limit,onSnapshot } from "firebase/firestore";
 import { db } from './firebase/index'
@@ -71,6 +72,7 @@ function App(props) {
             const querySnapshot = await getDocs(q);
             const results = [];
             querySnapshot.forEach((doc) => {
+                console.error("thucpham");
                 listdata.push({ id: doc.id, ...doc.data() });
             });
         } catch (error) {
@@ -84,6 +86,7 @@ function App(props) {
             const thucphamQuery = query(thucphamRef,);
             const querySnapshot = await getDocs(thucphamQuery);
             querySnapshot.forEach((doc) => {
+                console.error("shop");
               shop.push({ id: doc.id, ...doc.data() });
           });
           } catch (error) {
@@ -129,6 +132,7 @@ function App(props) {
                         <Stack.Screen name="TapRecipeStore" component={TapRecipeStore} />
                         <Stack.Screen name="Address" component={Address} />
                         <Stack.Screen name="MyAccount" component={MyAccount} />
+                        <Stack.Screen name="Home" component={Home} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </MyContext.Provider>

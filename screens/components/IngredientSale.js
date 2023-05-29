@@ -9,12 +9,13 @@ import { useSelector } from 'react-redux';
 
 
 function IngredientSale(props) {
-    const { navigation } = props
+    const { navigation, route,nav } = props
+    // const { navigate, goBack } = navigation
     const [listdata, setListdata] = useState([])
     const [loading, setLoading] = useState(false)
-    const user = useSelector((state) =>state.CurentUser)
-    
-    
+    const user = useSelector((state) => state.CurentUser)
+
+
     useEffect(() => {
         getData()
 
@@ -50,12 +51,12 @@ function IngredientSale(props) {
             id: '001',
         },
     ];
-        const handleAddToCart = async(itemId)=>{
-            const docRef = await addDoc(collection(db, `KHACHHANG/${user.uid}/GIOHANG`), {
-                name: "Tokyo",
-                country: "Japan"
-              });
-        }
+    const handleAddToCart = async (itemId) => {
+        const docRef = await addDoc(collection(db, `KHACHHANG/${user.uid}/GIOHANG`), {
+            name: "Tokyo",
+            country: "Japan"
+        });
+    }
     return (
 
         <View style={styles.container}>
@@ -69,13 +70,14 @@ function IngredientSale(props) {
                 <FlatList horizontal={true}
                     data={listdata}
                     renderItem={({ item }) => <ItemIngredientSale item={item} short={false}
-                    onPressCartPlus={()=>Alert.alert('helo')}
-                        onPress={() => navigation.navigate('ProductDetail',
-                            {
-                                itemDetail: item,
-                                shopOfPro: {}
-                            }
-                        )}></ItemIngredientSale>}
+                        onPressCartPlus={() => Alert.alert('helo')}
+                        onPress={() => nav.navigate('ProductDetail',
+                        {
+                            itemDetail : item ,
+                            shopOfPro:{}
+                        }
+                      )
+                        }></ItemIngredientSale>}
                     keyExtractor={item => item.id}></FlatList>
                 :
                 <FlatList horizontal={true}

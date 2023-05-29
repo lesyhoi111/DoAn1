@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, Modal, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Switch } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import MapView, { Marker } from 'react-native-maps';
-import Color from '../src/Color';
+import { collection, query, documentId, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from '../firebase/index'
+import Lottie from 'lottie-react-native';
 import { Picker } from '@react-native-picker/picker';
 import color from '../src/Color';
 import axios from 'axios';
+import { async } from '@firebase/util';
 function EditAddress(props) {
     const { navigation, route } = props
+    const { navigate, goBack } = navigation
+    const { user, itemAdd } = route.params
     const [isEnabled, setIsEnabled] = useState(false);
     const [province, setProvince] = useState([])
     const [district, setDistrict] = useState([])
@@ -19,9 +23,13 @@ function EditAddress(props) {
     const [provinceName, setProvinceName] = useState('')
     const [districtName, setDistrictName] = useState('')
     const [wardName, setWardName] = useState('')
-    const [address, setAdress] = useState('')
+    const [address, setAdress] = useState(itemAdd.diachi)
     const [showModalAddress, setShowModalAddress] = useState(false);
     const [pickerFocused, setPickerFocused] = useState(false)
+    const [addressDetail, setAdressDetail] = useState(itemAdd.motachitiet)
+    const [name, setName] = useState(itemAdd.tennguoinhan)
+    const [numphone, setNumphone] = useState(itemAdd.sdt)
+    const [isloading, setIsloading] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 
@@ -67,6 +75,75 @@ function EditAddress(props) {
         }
     }, [provinceCode, districtCode, wardCode])
 
+    const updateAdd = async () => {
+        if (name.trim() == '' || numphone.trim() == '' || address.trim() == '' || addressDetail.trim() == '') {
+            Alert.alert("Cảnh báo!", "Mời nhập đầy đủ thông tin")
+        } else {
+            if (name != itemAdd.diachi || numphone != itemAdd.sdt || address != itemAdd.diachi || addressDetail != itemAdd.motachitiet) {
+                setIsloading(true)
+                try {
+                    console.log("addAddress")
+                    const khachhangDocRef = doc(db, "KHACHHANG", user.id);
+                    const giohangDocRef = doc(khachhangDocRef, "DIACHIGIAOHANG", itemAdd.id);
+                    const docRef = await updateDoc(giohangDocRef, {
+                        diachi: address,
+                        macdinh: false,
+                        motachitiet: addressDetail,
+                        sdt: numphone,
+                        tennguoinhan: name,
+                    });
+                    setTimeout(() => {
+                        // setListAdd(result);
+                        setIsloading(false);
+                        Alert.alert("Thông báo!", "Cập nhật thành công");
+                        navigation.goBack();
+                    }, 1000)
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+            else {
+                navigation.goBack();
+            }
+        }
+    }
+
+    const handleDelete= async ()=>{
+        setIsloading(true);
+        try {
+            console.log("delete")
+            const khachhangDocRef = doc(db, "KHACHHANG", user.id);
+            const giohangDocRef = doc(khachhangDocRef, "DIACHIGIAOHANG", itemAdd.id);
+            const docRef = await deleteDoc(giohangDocRef);
+            setTimeout(() => {
+                // setListAdd(result);
+                setIsloading(false);
+                Alert.alert("Thông báo!", "Xóa thành công");
+                navigation.goBack();
+            }, 1000)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const deleteAdd = async () => {
+        
+        Alert.alert(
+            'Xác nhận xóa',
+            'Bạn có chắc chắn muốn xóa không?',
+            [
+              {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+              },
+              {
+                text: 'Yes',
+                onPress: () => {handleDelete()}
+              }
+            ]
+          )
+    }
 
     const handleSubmit = () => {
         if (provinceCode && districtCode && wardCode) {
@@ -86,15 +163,15 @@ function EditAddress(props) {
                 </View>
                 <View style={styles.container}>
                     <Text style={styles.title}>Liên hệ</Text>
-                    <TextInput style={styles.TextInput} placeholder='Họ và tên' placeholderTextColor={color.placeHoder} value='Nguyễn Viết Đức' />
-                    <TextInput style={styles.TextInput} placeholder='Số điện thoại' placeholderTextColor={color.placeHoder} value='0333848984' />
+                    <TextInput style={styles.TextInput} placeholder='Họ và tên' placeholderTextColor={color.placeHoder} value={name} onChangeText={(text) => { setName(text) }} />
+                    <TextInput style={styles.TextInput} placeholder='Số điện thoại' placeholderTextColor={color.placeHoder} value={numphone} onChangeText={(text) => { setNumphone(text) }} />
                     <Text style={styles.title}>Địa chỉ</Text>
                     <View style={styles.TextInput}>
-                    <Text style={{ fontSize: 16, color:address?'#333':color.placeHoder,paddingVertical:13 }} onPress={()=>setShowModalAddress(true)}>{address || 'Tỉnh/Thành Phố, Quận/Huyện, Phường/Xã'}</Text>
+                        <Text style={{ fontSize: 16, color: address ? '#333' : color.placeHoder, paddingVertical: 13 }} onPress={() => setShowModalAddress(true)}>{address || 'Tỉnh/Thành Phố, Quận/Huyện, Phường/Xã'}</Text>
                         <Ionicons name='chevron-forward-outline' size={22} color={'black'}></Ionicons>
 
                     </View>
-                    <TextInput style={styles.TextInput} placeholder='Tên đường, Tòa nhà, Số nhà' placeholderTextColor={color.placeHoder} value='đường Tạ Quang Bửu, khu phố Tân Hòa' />
+                    <TextInput style={[styles.TextInput,{borderBottomColor:'black',borderBottomWidth:1}]} placeholder='Tên đường, Tòa nhà, Số nhà' placeholderTextColor={color.placeHoder} value={addressDetail} onChangeText={(text) => { setAdressDetail(text) }} />
                     <Modal
                         visible={showModalAddress}
                         transparent
@@ -172,7 +249,7 @@ function EditAddress(props) {
                             </View>
                         </View>
                     </Modal>
-                    <Text style={styles.title}>Cài đặt</Text>
+                    {/* <Text style={styles.title}>Cài đặt</Text>
                     <View style={styles.defaltAddress}>
                         <Text style={styles.txtdefaltAddress}>
                             Đặt làm địa chỉ mặc định
@@ -183,18 +260,22 @@ function EditAddress(props) {
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleSwitch}
                             value={isEnabled}></Switch>
-                    </View>
+                    </View> */}
                 </View>
-                <TouchableOpacity style={styles.btnAddAddress}>
+                <TouchableOpacity style={[styles.btnAddAddress,{marginTop:20}]} onPress={()=>{deleteAdd()}}>
                     <View style={styles.iconAdd} >
-                        <Ionicons style={{ textAlign: 'center' }} name='remove-outline' size={22} color={color.backgroundMain}></Ionicons>
+                        <Ionicons style={{ textAlign: 'center' }} name='remove-outline' size={22} color={color.main}></Ionicons>
 
                     </View>
                     <Text style={styles.txtAddAddress}>Xóa địa chỉ</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnComplete}>
+                <TouchableOpacity style={styles.btnComplete} onPress={()=>{updateAdd()}}>
                     <Text style={styles.txtComplete}>Hoàn thành</Text>
                 </TouchableOpacity>
+                {isloading == true && 
+                <View style={{ width: '100%', height: '100%',  backgroundColor: "rgba(250,250,250,0.7)",position:'absolute'}}>
+                    <Lottie source={require('../src/Lottie/loading.json')} autoPlay loop />
+                </View>}
             </SafeAreaView>
         </ScrollView>
     )
@@ -210,8 +291,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color: '#333',
         paddingVertical: 7,
-        fontSize: 16
-
+        fontSize: 18,
+        fontWeight:'500'
     },
     TextInput: {
         backgroundColor: '#fff',
@@ -234,7 +315,7 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     btnComplete: {
-        backgroundColor: color.backgroundMain,
+        backgroundColor: color.main,
         padding: 10,
         marginHorizontal: 10,
         justifyContent: 'center',
@@ -250,14 +331,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderTopWidth: 1,
-        borderColor: color.backgroundMain,
+        borderColor: color.main,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
     },
     iconAdd: {
         borderWidth: 1,
-        borderColor: color.backgroundMain,
+        borderColor: color.main,
         width: 28,
         height: 28,
         justifyContent: 'center',
@@ -268,7 +349,7 @@ const styles = StyleSheet.create({
     txtAddAddress: {
         fontSize: 18,
         padding: 10,
-        color: color.backgroundMain
+        color: color.main
     },
     modalContainer: {
         flex: 1,

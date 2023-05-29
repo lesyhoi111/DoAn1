@@ -15,26 +15,18 @@ function Address(props) {
     const { user } = route.params
     const [isloading, setIsloading] = useState(false);
     const [listAdd, setListAdd] = useState([]);
-    const addres = [
-        {
-            name: 'lê sỹ hội',
-            address: 'quảng nam',
-            street: 'ql 1a',
-            numphone: '01 213 21 32',
-            isdefault: true
-        },
-        {
-            name: 'lê sỹ hội',
-            address: 'quảng nam',
-            street: 'ql 1a',
-            numphone: '01 213 21 32',
-            isdefault: false
-        },
-    ];
-
+   
     useEffect(() => {
-        getlistAdd();
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log("focus")
+            getlistAdd();
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    // useEffect(() => {
+    //     getlistAdd();
+    // }, [])
 
     const getlistAdd = async () => {
         setIsloading(true)
@@ -77,7 +69,7 @@ function Address(props) {
                                         <Text style={{ fontSize: 16, fontWeight: '400',alignSelf:'center' }}>{add.sdt}</Text>
                                     </View>
                                     <TouchableOpacity
-                                        onPress={() => navigation.navigate("EditAdress")}//navigation.navigate("EditAddress")
+                                        onPress={() => navigation.navigate("EditAdress",{user:user,itemAdd:add})}//navigation.navigate("EditAddress")
                                     >
                                         <Text style={{ fontSize: 18, fontWeight: '500', color: Color.main }}>sửa</Text>
                                     </TouchableOpacity>
@@ -90,7 +82,7 @@ function Address(props) {
                     </View>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("AddAddress")}//navigation.navigate("AddAddress")
+                        onPress={() => navigation.navigate("AddAddress",{user:user})}//navigation.navigate("AddAddress")
                         style={styles.btnAddAddress}>
                         <View style={styles.iconAdd} >
                             <Ionicons style={{ textAlign: 'center' }} name='add' size={22} color={Color.main}></Ionicons>

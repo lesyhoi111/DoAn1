@@ -18,40 +18,44 @@ const ProductDetail = (props) => {
     const { listdata, shop,listuser } = useContext(MyContext);
     const [number, setNumber] = useState(1);
     const [shopPro, setShopPro] = useState(shopOfPro);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (Object.keys(shopOfPro).length == 0) {
+            console.log("getShop1")
             getShop()
         }
+        else{
         console.log(listdata.length)
         setProOfShop(listdata.filter((item) => {  return item.mach == shopPro.id }))
+        }
     }, [])
 
     const getShop = () => {
+        console.log("getShop2")
         const itemThis = shop.find((itemid, index) => {
+            console.log(itemDetail.mach);
             return itemDetail.mach == itemid.id
         })
         setTimeout(() => {
+            console.log("getShop3")
             setShopPro(itemThis);
-        }, 500)
+            setProOfShop(listdata.filter((item) => {  return item.mach == shopPro.id }))
+            console.log(shopPro)
+        }, 1000)
     }
 
-    // const listdata=[{
-    //     giagoc:150000,
-    //     giamgia:0,
-    //     hansd:"21-6-2023",
-    //     image:"https://firebasestorage.googleapis.com/v0/b/marketease-75e09.appspot.com/o/20210106_041321_793265_hat-giong-rau-xa-la.max-1800x1800.jpg?alt=media&token=b1804aa5-5c1f-4552-b736-e8da9134f0a2",
-    //     mach: "vmOMQxCQLcTqaVmXOOcu",
-    //     maloaitp: "IfveXeJwp6BQSuQ9xh8W", 
-    //     mota: "Rau xà lách là một loại rau củ được sử dụng rộng rãi trong ẩm thực và là một phần quan trọng của chế độ ăn uống lành mạnh. Rau xà lách có lá mỏng, mềm, mịn và có màu xanh nhạt đến xanh đậm tùy thuộc vào loại. Nó có độ giòn và vị nhẹ nhàng, thanh mát.", 
-    //     ngaysx: "6-1-2023", 
-    //     nguongoc: "công ty Nông nghiệp Việt", 
-    //     soluongcon: 12, 
-    //     soluongdaban: 1, 
-    //     sosao: 3.6, 
-    //     ten: "rau xà lách Đà Lạt 0.5kg", 
-    //     trangthai: "Available"
-    // },]
+    const DATA = [
+        {
+            id: '002',
+        },
+        {
+            id: '003',
+        },
+        {
+            id: '001',
+        },
+    ];
 
     const handleNumberSub = () => {
         if (number > 0) {
@@ -106,6 +110,7 @@ const ProductDetail = (props) => {
                     </View>
                     <Text style={styles.originalPrice}>{itemDetail.giagoc.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                 </View>
+                {Object.keys(shopPro).length != 0 ?
                 <TouchableOpacity style={{ backgroundColor: 'white', marginVertical: 7, padding: 10, flexDirection: 'row' }} 
                 onPress={() => navigation.navigate('Store',{shop:shopPro})}>
                     <Image style={styles.imgShop} source={{ uri: shopPro.image }}></Image>
@@ -132,12 +137,18 @@ const ProductDetail = (props) => {
                         }
                     </TouchableOpacity>
                 </TouchableOpacity>
+                :
+                <View style={{ backgroundColor: 'white', marginVertical: 7, padding: 10, flexDirection: 'row' }}>
+                     <View style={[styles.imgShop,{backgroundColor:color.placeHoder}]} ></View>
+                </View>
+                }
                 {/* <Text style={styles.info}>Thông tin sản phẩm:</Text>
                 <Text style={styles.infoContent}>Vivamus pulvinar venenatis nunc et faucibus. Proe.</Text> */}
                 <View>
                     <View style={{ backgroundColor: 'white', paddingVertical: 7 }}>
                         <Text style={{ paddingLeft: 10, fontSize: 17, color: 'black', fontWeight: '500' }}>Sản phẩm khác của cửa hàng:</Text>
                     </View>
+                    {Object.keys(shopPro).length != 0 ?
                     <FlatList horizontal={true}
                         data={proOfShop}
                         renderItem={({ item }) => <ItemIngredientSale item={item} short={true}
@@ -148,6 +159,22 @@ const ProductDetail = (props) => {
                                 }
                             )}></ItemIngredientSale>}
                         keyExtractor={item => item.id}></FlatList>
+                        :
+                        <FlatList horizontal={true}
+                    data={DATA}
+                    renderItem={({ item }) => <View style={{ height: 230, width: 140, backgroundColor: 'white', borderRadius: 10, marginHorizontal: 10, elevation: 10, marginVertical: 10 }}>
+                        <View style={{ width: '100%', height: '39%', borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: color.placeHoder }}></View>
+                        <View style={{ marginHorizontal: 5 }}>
+                            <View style={{ width: 110, height: 10, backgroundColor: color.placeHoder, marginVertical: 5 }}></View>
+                            <View style={{ width: 60, height: 10, backgroundColor: color.placeHoder, marginVertical: 5 }}></View>
+                            <View style={{ width: 80, height: 10, backgroundColor: color.placeHoder, marginVertical: 5 }}></View>
+                            <View style={{ width: 90, height: 10, backgroundColor: color.placeHoder, marginVertical: 5 }}></View>
+                            <View style={{ width: 70, height: 10, backgroundColor: color.placeHoder, marginVertical: 5 }}></View>
+                            <View style={{ width: 70, height: 10, backgroundColor: color.placeHoder, marginVertical: 5, alignSelf: 'center' }}></View>
+                        </View>
+                    </View>}
+                    keyExtractor={item => item.id}
+                ></FlatList>    }
                 </View>
                 <View style={{ backgroundColor: 'white' }}>
                     <DetailedInformation item={itemDetail}></DetailedInformation>

@@ -3,12 +3,16 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, Modal, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Switch } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import MapView, { Marker } from 'react-native-maps';
-import Color from '../src/Color';
+import { collection, query, documentId, getDocs, doc, where, addDoc } from "firebase/firestore";
+import { db } from '../firebase/index'
+import Lottie from 'lottie-react-native';
 import { Picker } from '@react-native-picker/picker';
 import color from '../src/Color';
 import axios from 'axios';
 function AddAddress(props) {
     const { navigation, route } = props
+    const { navigate, goBack } = navigation
+    const { user } = route.params
     const [isEnabled, setIsEnabled] = useState(false);
     const [province, setProvince] = useState([])
     const [district, setDistrict] = useState([])
@@ -20,8 +24,12 @@ function AddAddress(props) {
     const [districtName, setDistrictName] = useState('')
     const [wardName, setWardName] = useState('')
     const [address, setAdress] = useState('')
+    const [addressDetail, setAdressDetail] = useState('')
+    const [name, setName] = useState('')
+    const [numphone, setNumphone] = useState('')
     const [showModalAddress, setShowModalAddress] = useState(false);
     const [pickerFocused, setPickerFocused] = useState(false)
+    const [isloading, setIsloading] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 
@@ -67,6 +75,33 @@ function AddAddress(props) {
         }
     }, [provinceCode, districtCode, wardCode])
 
+    const addAddress = async () => {
+        if (name.trim() == '' || numphone.trim() == '' || address.trim() == '' || addressDetail.trim() == '') {
+            Alert.alert("Cảnh báo!", "Mời nhập đầy đủ thông tin")
+        } else {
+            setIsloading(true)
+            try {
+                console.log("addAddress")
+                const khachhangDocRef = doc(db, "KHACHHANG", user.id);
+                const giohangCollectionRef = collection(khachhangDocRef, "DIACHIGIAOHANG");
+                const docRef = await addDoc(giohangCollectionRef, {
+                    diachi: address,
+                    macdinh: false,
+                    motachitiet: addressDetail,
+                    sdt: numphone,
+                    tennguoinhan: name,
+                });
+                setTimeout(() => {
+                    // setListAdd(result);
+                    setIsloading(false);
+                    Alert.alert("Thông báo!", "Thêm thành công");
+                    navigation.goBack();
+                }, 1000)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+    }
 
     const handleSubmit = () => {
         if (provinceCode && districtCode && wardCode) {
@@ -86,15 +121,15 @@ function AddAddress(props) {
                 </View>
                 <View style={styles.container}>
                     <Text style={styles.title}>Liên hệ</Text>
-                    <TextInput style={styles.TextInput} placeholder='Họ và tên' placeholderTextColor={color.placeHoder} />
-                    <TextInput style={styles.TextInput} placeholder='Số điện thoại' placeholderTextColor={color.placeHoder} />
+                    <TextInput style={styles.TextInput} placeholder='Họ và tên' placeholderTextColor={color.placeHoder} onChangeText={(text) => { setName(text) }} value={name} />
+                    <TextInput style={styles.TextInput} placeholder='Số điện thoại' placeholderTextColor={color.placeHoder} onChangeText={(text) => { setNumphone(text) }} value={numphone} />
                     <Text style={styles.title}>Địa chỉ</Text>
                     <View style={styles.TextInput}>
                         <Text style={{ fontSize: 16, color: address ? '#333' : color.placeHoder, paddingVertical: 13 }} onPress={() => setShowModalAddress(true)}>{address || 'Tỉnh/Thành Phố, Quận/Huyện, Phường/Xã'}</Text>
                         <Ionicons name='chevron-forward-outline' size={22} color={'black'}></Ionicons>
 
                     </View>
-                    <TextInput style={styles.TextInput} placeholder='Tên đường, Tòa nhà, Số nhà' placeholderTextColor={color.placeHoder} />
+                    <TextInput style={[styles.TextInput,{borderBottomColor:'black',borderBottomWidth:1}]} placeholder='Tên đường, Tòa nhà, Số nhà' placeholderTextColor={color.placeHoder} onChangeText={(text) => { setAdressDetail(text) }} value={addressDetail}></TextInput>
                     <Modal
                         visible={showModalAddress}
                         transparent
@@ -172,7 +207,7 @@ function AddAddress(props) {
                             </View>
                         </View>
                     </Modal>
-                    <Text style={styles.title}>Cài đặt</Text>
+                    {/* <Text style={styles.title}>Cài đặt</Text>
                     <View style={styles.defaltAddress}>
                         <Text style={styles.txtdefaltAddress}>
                             Đặt làm địa chỉ mặc định
@@ -183,11 +218,15 @@ function AddAddress(props) {
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleSwitch}
                             value={isEnabled}></Switch>
-                    </View>
+                    </View> */}
                 </View>
-                <TouchableOpacity style={styles.btnComplete}>
+                <TouchableOpacity style={styles.btnComplete} onPress={() => { addAddress() }}>
                     <Text style={styles.txtComplete}>Hoàn thành</Text>
                 </TouchableOpacity>
+                {isloading == true && 
+                <View style={{ width: '100%', height: '100%',  backgroundColor: "rgba(250,250,250,0.7)",position:'absolute'}}>
+                    <Lottie source={require('../src/Lottie/loading.json')} autoPlay loop />
+                </View>}
             </SafeAreaView>
         </ScrollView>
     )
@@ -227,7 +266,7 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     btnComplete: {
-        backgroundColor: color.backgroundMain,
+        backgroundColor: color.main,
         padding: 10,
         marginHorizontal: 10,
         justifyContent: 'center',

@@ -38,8 +38,8 @@ function Home(props) {
                     <Search white={false}></Search>   
                     <TouchableOpacity style={{ height:35,width:330,position:'absolute',left:15,top:213}} onPress={()=>navigate('SearchScreen')}>
                         </TouchableOpacity>      
-                <IngredientSale></IngredientSale>
-                <TapRecipe></TapRecipe>
+                <IngredientSale nav={navigation}></IngredientSale>
+                <TapRecipe nav={navigation}></TapRecipe>
 
             {/* <View style={{position:'absolute',height:height,width:width,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
                 <Lottie source={require('../src/Lottie/loading2.json')} autoPlay speed={1.5}/>

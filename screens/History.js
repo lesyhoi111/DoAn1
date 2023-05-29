@@ -82,7 +82,8 @@ function History(props) {
       // console.log("111"+ oder[0].listThucPham)
       // console.log("111" +oder[0].listThucPham[0].giatien)
       setOrder(listdh);
-      setThucpham(listdh);
+      setThucpham(listTP);
+      setListdataDis(listdh);
       console.log(oder+"bb")
       console.log(thucpham+"aa")
       setLoading(false);
@@ -120,7 +121,7 @@ function History(props) {
                   <Text style={{ fontSize: 18, color: 'red', fontWeight: '500' }}>{item.trangthai}</Text>
                 </View>
                 <View style={{ borderBottomColor: Color.backgroundDefault, borderBottomWidth: 1, width: "100%" }}>
-                  {listTP.filter((itemtp, ind) => {  return item.id == itemtp.id })
+                  {thucpham.filter((itemtp, ind) => {  return item.id == itemtp.id })
                     .map((itemTPh, i) => (
                       <View key={i} style={{  marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between',marginHorizontal:10,borderBottomWidth:1,borderBottomColor:Color.backgroundDefault }}>
                         <Text style={{ fontSize: 18, color: 'black', flex: 1 }} numberOfLines={2} ellipsizeMode={'tail'}>

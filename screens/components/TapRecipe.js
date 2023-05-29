@@ -7,7 +7,7 @@ import { db } from '../../firebase/index'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const listTab = ['Tất cả', 'Thịt,cá,trứng,hải sản', 'Rau,củ,quả,trái cây', 'Dầu ăn,nước chấm,gia vị', 'Nước ngọt,bia,sữa', 'Gạo,bột,đồ khô', 'Kem,thực phẩm đông lạnh'];
 function TapRecipe(props) {
-  const { navigation } = props
+  const { navigation, route,nav } = props
   const [tabSelect, setTabSelect] = useState(0);
   const [addcard, setAddCard] = useState(false);
 
@@ -86,7 +86,7 @@ function TapRecipe(props) {
     return (
       <TouchableOpacity
         style={styles.boxitem}
-        onPress={() => navigation.navigate('ProductDetail',
+        onPress={() => nav.navigate('ProductDetail',
           {
             itemDetail: item,
             shopOfPro: {}
