@@ -19,7 +19,7 @@ function Home(props) {
     const removeItemFromStorage = async (key) => {
         try {
             await AsyncStorage.removeItem(key);
-            dispatch(SignOut());
+            dispatch(SignOut(null));
             console.log('Item removed successfully.');
             navigation.navigate('Login')
         } catch (error) {
@@ -34,9 +34,7 @@ function Home(props) {
                     
                 <Lottie source={require('../src/Lottie/home2.json')} autoPlay loop speed={1}  style={{position:'absolute', height:100, width:100,top:-10,right:-13}}/>
                 <Lottie source={require('../src/Lottie/home1.json')} autoPlay loop speed={1}  style={{position:'absolute', height:300, width:300,top:-45,left:-40}}/>
-                <TouchableOpacity style={{backgroundColor:"red"}} onPress={()=>{removeItemFromStorage("user")}}>
-                        <Text>aloalao</Text>
-                    </TouchableOpacity>
+                
                 <View style={{ marginVertical: 0,flex:4 }}>
                         <Text style={styles.txtheader}>Xin chào!</Text>
                         <Text style={styles.txtheaderbottom}>Bạn muốn mua thực phẩm gì?</Text>

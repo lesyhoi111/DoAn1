@@ -68,12 +68,12 @@ const [myuser, setMyuser] = useState({
   sotien: 0,
   uid: ""
 })
-const user = auth.currentUser;
-const { listdata, shop, listuser } = useContext(MyContext);
-useEffect(() => {
-  setMyuser(listuser.find((item) => { return item.uid == user.uid }))
-  // getlistuser();
-})
+// const user = auth.currentUser;
+// const { listdata, shop, listuser } = useContext(MyContext);
+// useEffect(() => {
+//   setMyuser(listuser.find((item) => { return item.id == user.uid }))
+//   // getlistuser();
+// })
   return (
     
     <Tab.Navigator initialRouteName="Home"  screenOptions={{

@@ -42,6 +42,7 @@ function Profile(props) {
     const user = useSelector((state) => state.CurentUser)
     const { listdata, shop, listuser } = useContext(MyContext);
     const [myuser, setMyuser] = useState({
+        cuahangdangtheodoi:[],
         anhdaidien: "",
         id: "",
         ten: "",
@@ -51,8 +52,7 @@ function Profile(props) {
         magiamgiadadung: [],
         sdt: "00",
         ngaysinh: "",
-        sotien: 0,
-        uid: ""
+        sotien: 0
       })
     // const { myuser, setMyuser } = useContext(UIContext);
     // getlistuser;
@@ -65,7 +65,6 @@ function Profile(props) {
         const unsubscribe = navigation.addListener('focus', () => {
             console.log("123")
             getlistuser();
-            setMyuser(listuser.find((item) => { return item.uid == user.id }))
         });
         return unsubscribe;
     }, [navigation]);
@@ -82,8 +81,9 @@ function Profile(props) {
                 });
             });
             setTimeout(() => {
-                setMyuser(listU.find((item) => { console.log(item.uid); return item.uid == user.uid }))
-                console.log(myuser.uid)
+                setMyuser(listU.find((item) => { console.log(item.id); return item.id == user.uid }))
+                console.log(user.uid)
+                console.log(myuser.id)
                 // setLoading(false)
             }, 2000)
 
@@ -118,7 +118,7 @@ function Profile(props) {
 
                     <ScrollView horizontal={false} style={{ backgroundColor: '#f1f1f1', paddingTop: 15 }}>
                         <View style={{ margin: 15, backgroundColor: 'white', borderRadius: 10 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }} onPress={()=>{navigate('ReviewPro')}}>
                                 <MaterialIcons name='payment' size={25} color={'#a9a9a9'}></MaterialIcons>
                                 <View style={{ flex: 1, paddingLeft: 15 }}>
                                     <Text style={{ color: 'black', fontSize: 20, fontWeight: '400' }}>Payment Methods</Text>

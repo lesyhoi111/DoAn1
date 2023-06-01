@@ -9,6 +9,7 @@ import AddAddress from './AddAddress'
 import EditAdress from './EditAdress'
 import History from './History'
 import Voucher from './Voucher'
+import ReviewPro from './ReviewPro'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 function StackProfile(props) {
@@ -23,7 +24,7 @@ function StackProfile(props) {
                 <Stack.Screen name="EditAdress" component={EditAdress} />
                 <Stack.Screen name="History" component={History} />
                 <Stack.Screen name="Voucher" component={Voucher} />
-                
+                <Stack.Screen name="ReviewPro" component={ReviewPro} />
             </Stack.Navigator>
         
     )

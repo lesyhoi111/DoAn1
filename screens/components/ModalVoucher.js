@@ -8,7 +8,7 @@ import { collection, query, documentId, getDocs, doc, where } from "firebase/fir
 import { db } from '../../firebase/index'
 import Lottie from 'lottie-react-native';
 
-const ModalVoucher = ({ visible, onClose, onTrue,listVou }) => {
+const ModalVoucher = ({ visible, onClose, onTrue,listVou,total }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   
@@ -51,9 +51,10 @@ const ModalVoucher = ({ visible, onClose, onTrue,listVou }) => {
 
   
   const handleUpdate = async (item) => {
+    if(total<item.dieukiendonhang){
+      Alert.alert("Thông báo!","Đơn hàng không đủ điều kiện áp dụng mã");
+    }else{
     setLoading(true)
-    
-    
     await dispatch(
         addVoucher({
           id: item.id,
@@ -72,6 +73,7 @@ const ModalVoucher = ({ visible, onClose, onTrue,listVou }) => {
         onTrue();
         onClose();
       }, 500);
+    }
 }
 
   return (

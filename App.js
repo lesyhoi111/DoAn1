@@ -16,6 +16,7 @@ import TapRecipe from './screens/components/TapRecipe'
 import TapRecipeStore from './screens/components/TapRecipeStore'
 import Address from './screens/Address'
 import Home from './screens/Home'
+import OderComplete from './screens/OderComplete'
 import MyAccount from './screens/MyAccount'
 import { collection, query, where, getDocs, orderBy, limit,onSnapshot } from "firebase/firestore";
 import { db } from './firebase/index'
@@ -89,7 +90,7 @@ function App(props) {
             const q = query(collection(db, "THUCPHAM"),
             );
             const querySnapshot = await getDocs(q);
-            const results = [];
+            listdata=[]
             querySnapshot.forEach((doc) => {
                 console.error("thucpham");
                 listdata.push({ id: doc.id, ...doc.data() });
@@ -158,6 +159,7 @@ function App(props) {
                         <Stack.Screen name="Address" component={Address} />
                         <Stack.Screen name="MyAccount" component={MyAccount} />
                         <Stack.Screen name="Home" component={Home} />
+                        <Stack.Screen name="OderComplete" component={OderComplete} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </MyContext.Provider>

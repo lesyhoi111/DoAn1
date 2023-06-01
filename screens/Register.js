@@ -60,9 +60,9 @@ function Register(props) {
   }
   const addUser = async (id, name, email, password) => {
     const docRef = await setDoc(doc(db, "KHACHHANG", id), {
-      name: name,
+      ten: name,
       email: email,
-      password: password,
+      matkhau: password,
       ngaythamgia: moment(Date.now()).format("DD-MM-YYYY"),
       magiamgiadadung: [],
       sdt: "",

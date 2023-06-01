@@ -16,7 +16,7 @@ import { db, storage } from '../firebase/index'
 import { Button } from 'react-native-elements';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { async } from '@firebase/util';
-let listuser2=[];
+// let listuser2=[];
 function dateFormater(date, separator) {
   var day = date.getDate();
   // add +1 to month because getMonth() returns month from 0 to 11
@@ -105,26 +105,26 @@ function MyAccount(props) {
     // console.log(result)
     // setImage(result.assets[0].uri);
   }
-  const getlistuser = async () => {
-    try {
-    //     const thucphamRef = collection(db, "KHACHHANG");
-    //     const thucphamQuery = query(thucphamRef);
-    //     const querySnapshot = await getDocs(thucphamQuery);
-    //     querySnapshot.forEach((doc) => {
-    //         listuser.push({ id: doc.id, ...doc.data() });
-    //   });
-    const q = query(collection(db, "KHACHHANG"));
-        const querySnapshot = onSnapshot(q, (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            listuser2.push({ id: doc.id, ...doc.data() });
-            console.log("---")
-            console.log(doc.data().anhdaidien)
-          });
-        });
-      } catch (error) {
-        console.error(error)
-      }
-  }
+  // const getlistuser = async () => {
+  //   try {
+  //   //     const thucphamRef = collection(db, "KHACHHANG");
+  //   //     const thucphamQuery = query(thucphamRef);
+  //   //     const querySnapshot = await getDocs(thucphamQuery);
+  //   //     querySnapshot.forEach((doc) => {
+  //   //         listuser.push({ id: doc.id, ...doc.data() });
+  //   //   });
+  //   const q = query(collection(db, "KHACHHANG"));
+  //       const querySnapshot = onSnapshot(q, (querySnapshot) => {
+  //         querySnapshot.forEach((doc) => {
+  //           listuser2.push({ id: doc.id, ...doc.data() });
+  //           console.log("---")
+  //           console.log(doc.data().anhdaidien)
+  //         });
+  //       });
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  // }
   const SaveData = async () => {
     if (image != user.anhdaidien) {
       const b = await uploadpic();
@@ -137,7 +137,7 @@ function MyAccount(props) {
         email: email,
         ngaysinh: dates.replace(/\//g, "-"),
       });
-      await getlistuser();
+      // await getlistuser();
       setTimeout( async() => {
         console.log("trước")
         // await setMyuser(listuser2.find((item) => { return item.uid == user.uid }))

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, Animated, StyleSheet, SafeAreaView, View, ImageBackground, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Text, Animated, StyleSheet, SafeAreaView, View, ImageBackground, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ProductItemHz from './components/ProductItemHz';
@@ -18,6 +18,7 @@ const Cart = (props) => {
   const { listdata,shop,listuser } = useContext(MyContext);
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
+  const user = useSelector((state) => state.CurentUser)
   const items = useSelector(state => state.cart.items);
 
   const total = items.reduce((acc, item) => acc + ((item.product.giagoc*(100-item.product.giamgia)/100)*item.num), 0);
@@ -33,10 +34,10 @@ const Cart = (props) => {
     setLoading(true)
     try {
       console.log("getlistmatp1")
-      const khachhangDocRef = doc(db, "KHACHHANG", "R3XHZJR4TzNnEMm7ldOX");
+      const khachhangDocRef = doc(db, "KHACHHANG", user.uid);
       const giohangCollectionRef = collection(khachhangDocRef, "GIOHANG");
       const querySnapshot = await getDocs(giohangCollectionRef);
-      result = await querySnapshot.docs.map((doc) => doc.data());
+      result = await querySnapshot.docs.map((doc) => ({id:doc.id, ...doc.data()}));
      
         setTimeout(() => {
           getdata(result);
@@ -48,29 +49,10 @@ const Cart = (props) => {
 
   }
 
-  // const getListShop = async () => {
-  //   try {
-  //     const matpList = listId.map((item) => item.matp);
-  //     console.log(matpList)
-  //     const thucphamRef = collection(db, "CUAHANG");
-  //     const thucphamQuery = query(thucphamRef,);
-  //     const querySnapshot = await getDocs(thucphamQuery);
-  //     const results = [];
-  //     querySnapshot.forEach((doc) => {
-  //       results.push({ id: doc.id, ...doc.data() });
-  //       console.log(doc.id)
-  //   });
-  //     setShop(results)
-  //     console.log(Data)
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
-
   const getdata = async (listId) => {
     try {
      setLoading(true)
-      const matpList = listId.map((item) => item.matp);
+      const matpList = listId.map((item) => item.id);
       console.log(matpList)
       const thucphamRef = collection(db, "THUCPHAM");
       const thucphamQuery = query(
@@ -140,17 +122,27 @@ const Cart = (props) => {
 
   const getNameShop = (item) => {
     const itemThis = shop.find((itemid, index) => {
-      return item.mach == itemid.id
+      console.log(item.mach+"aaa")
+      console.log(itemid.id)
+      return item.mach.trim() == itemid.id.trim()
     })
     return itemThis
   }
 
   const soluong = (item) => {
     const itemThis =  result.find((itemid, index) => {
-      return item.id == itemid.matp
+      return item.id == itemid.id
     })
     return itemThis.soluong
   }
+
+const handleOder=()=>{
+  if(items.length>0){
+    navigation.navigate('Order')
+  }else{
+    Alert.alert("Thông báo!","Mời chọn thực phẩm muốn mua")
+  }
+}
 
   return (
     <View style={styles.container}>
@@ -204,7 +196,7 @@ const Cart = (props) => {
           <Text style={styles.money}>{total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <TouchableOpacity style={styles.btnAddToCart} onPress={() => navigation.navigate('Order')}>
+          <TouchableOpacity style={styles.btnAddToCart} onPress={() => {handleOder()}}>
             <Text style={styles.btnText}>ĐẶT HÀNG</Text>
           </TouchableOpacity>
         </View>
