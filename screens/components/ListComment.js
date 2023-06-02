@@ -7,17 +7,17 @@ import { collection, getDocs, } from "firebase/firestore";
 import { db } from '../../firebase/index'
 import Color from "../../src/Color";
 import color from "../../src/Color";
+import { doc, updateDoc } from '../../firebase/firebase'
 const { width } = Dimensions.get('window');
 const ListComment = (props) => {
     const { item } = props
-
     const [listdata, setListdata] = useState([]);
     const [loading, setLoading] = useState(false);
-
-
+    const [likeedList, setLikeedList] = useState([])
+    const [like, setLike] = useState(false)
+    const [showAll, setShowAll] = useState(false);
     useEffect(() => {
         getList();
-
     }, [])
     const getList = async () => {
         setLoading(true);
@@ -26,19 +26,16 @@ const ListComment = (props) => {
             const querySnapshot = await getDocs(hinhanhminhhoaRef);
             const results = [];
             querySnapshot.forEach((doc) => {
-                results.push(doc.data());
+                results.push({ id: doc.id, ...doc.data() });
             });
-            setTimeout(() => {
-                setListdata(results);
-                setLoading(false);
-            }, 1000);
+            setListdata(results);
+            setLoading(false);
         } catch (error) {
             console.error(error);
         }
     }
 
-    const [like, setLike] = useState(false)
-    const [showAll, setShowAll] = useState(false);
+
 
     const data = [
         {
@@ -57,6 +54,42 @@ const ListComment = (props) => {
             id: 5,
             name: "helo"
         },]
+    const TPId = 'A5GCt0z9LiOv8abubzmJ'
+    const handleToggleLike = async (item) => {
+        const likeRef = doc(db, `THUCPHAM/${TPId}/danhgiasanpham/${item.id}`);
+        if (!likeedList.includes(item.id)) {
+            await updateDoc(likeRef, {
+                luotthich: item.luotthich + 1,
+            })
+            .then(()=>{
+                setLike(true)
+                const newLikeList = [...likeedList];
+                newLikeList.push(item.id)
+                setLikeedList(newLikeList);
+                getList();
+            }
+            )
+            .catch((error)=>{
+                console.log(error)
+            })
+        }
+        else {
+            await updateDoc(likeRef, {
+                luotthich: item.luotthich - 1,
+            })
+            .then(()=>{
+                setLike(false)
+                const newLikeList = likeedList.filter(i => i !== item.id)
+                setLikeedList(newLikeList)
+                getList();
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+            
+        }
+    }
+
     const itemComment = (itemCom) => {
         return (
             <View style={{ padding: 10, borderBottomColor: 'silver', borderBottomWidth: 1, }}>
@@ -71,11 +104,11 @@ const ListComment = (props) => {
                 <View style={styles.footer}>
                     <MaterialCommunityIcons name="clock-time-four" style={{ fontSize: 17, marginRight: 3 }}></MaterialCommunityIcons>
                     <Text style={{ fontSize: 15 }}>{itemCom.ngaydg}</Text>
-                    <TouchableOpacity onPress={() => setLike(!like)}>
-                        <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: like == false ? 'black' : 'green' }}></AntIcon>
+                    <TouchableOpacity onPress={() => handleToggleLike(itemCom)}>
+                        <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: !likeedList.includes(itemCom.id) ? 'black' : 'green' }}></AntIcon>
                     </TouchableOpacity>
                     <Text style={{ color: 'black', marginRight: 3, fontSize: 15 }}>{itemCom.luotthich}</Text>
-                    <Text style={{ fontSize: 15 }}>Thích</Text>
+                    <Text style={{ fontSize: 15, color: '#333' }}>Thích</Text>
                 </View>
             </View>
         )
@@ -92,7 +125,6 @@ const ListComment = (props) => {
                             <Text>({item.luotdanhgia} đánh giá)</Text>
                         </View>
                     </View>
-                    {loading == false ?
                         <View style={{ height: 300 }}>
                             {listdata.map((itemCom, id) => (
                                 <View key={id} style={{ padding: 10, borderBottomColor: 'silver', borderBottomWidth: 1, }}>
@@ -107,11 +139,11 @@ const ListComment = (props) => {
                                     <View style={styles.footer}>
                                         <MaterialCommunityIcons name="clock-time-four" style={{ fontSize: 17, marginRight: 3 }}></MaterialCommunityIcons>
                                         <Text style={{ fontSize: 15 }}>{itemCom.ngaydg}</Text>
-                                        <TouchableOpacity onPress={() => setLike(!like)}>
-                                            <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: like == false ? 'black' : 'green' }}></AntIcon>
+                                        <TouchableOpacity onPress={() => handleToggleLike(itemCom)}>
+                                            <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: !likeedList.includes(itemCom.id) ? 'black' : 'green' }}></AntIcon>
                                         </TouchableOpacity>
                                         <Text style={{ color: 'black', marginRight: 3, fontSize: 15 }}>{itemCom.luotthich}</Text>
-                                        <Text style={{ fontSize: 15 }}>Thích</Text>
+                                        <Text style={{ fontSize: 15, color: '#333' }}>Thích</Text>
                                     </View>
                                 </View>
                             ))}
@@ -122,7 +154,7 @@ const ListComment = (props) => {
                     keyExtractor={(item) => item.id}
                 ></FlatList> */}
                         </View>
-                        :
+                     {/*    :
                         <View style={{ height: 300 }}>
                             {data.map((itemCom, id) => (
                                 <View key={id} style={{ padding: 10, borderBottomColor: 'silver', borderBottomWidth: 1, }}>
@@ -137,7 +169,7 @@ const ListComment = (props) => {
                                         <MaterialCommunityIcons name="clock-time-four" style={{ fontSize: 17, marginRight: 3 }}></MaterialCommunityIcons>
                                         <Text style={{ fontSize: 15 }}>20-6-2023</Text>
                                         <TouchableOpacity >
-                                            <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: like == false ? 'black' : 'green' }}></AntIcon>
+                                            <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: !likeedList.includes(itemCom.id) ? 'black' : 'green' }}></AntIcon>
                                         </TouchableOpacity>
                                         <Text style={{ color: 'black', marginRight: 3, fontSize: 15 }}>0</Text>
                                         <Text style={{ fontSize: 15 }}>Thích</Text>
@@ -145,7 +177,7 @@ const ListComment = (props) => {
                                 </View>
                             ))}
                         </View>
-                    }
+                    } */}
                     <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(110,110,110,0.9)' }}
                         onPress={() => setShowAll(!showAll)}>
 
@@ -177,11 +209,11 @@ const ListComment = (props) => {
                                 <View style={styles.footer}>
                                     <MaterialCommunityIcons name="clock-time-four" style={{ fontSize: 17, marginRight: 3 }}></MaterialCommunityIcons>
                                     <Text style={{ fontSize: 15 }}>{itemCom.ngaydg}</Text>
-                                    <TouchableOpacity onPress={() => setLike(!like)}>
-                                        <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: like == false ? 'black' : 'green' }}></AntIcon>
+                                    <TouchableOpacity onPress={() => handleToggleLike(itemCom)}>
+                                        <AntIcon name="like1" style={{ fontSize: 17, marginRight: 3, marginLeft: 25, color: !likeedList.includes(itemCom.id) ? 'black' : 'green' }}></AntIcon>
                                     </TouchableOpacity>
                                     <Text style={{ color: 'black', marginRight: 3, fontSize: 15 }}>{itemCom.luotthich}</Text>
-                                    <Text style={{ fontSize: 15 }}>Thích</Text>
+                                    <Text style={{ fontSize: 15, color: '#333' }}>Thích</Text>
                                 </View>
                             </View>
                         ))}

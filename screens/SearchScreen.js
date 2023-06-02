@@ -4,63 +4,60 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
 import Search from './components/Search';
 import color from '../src/Color';
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
 import { MyContext } from '../App';
 import ItemIngredientSale from './components/ItemIngredientSale';
+import {
+    collection,
+    db,
+    getDocs,
+} from '../firebase/firebase';
+import { flingGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/FlingGestureHandler';
 const { width, height } = Dimensions.get('window');
 
 function SearchScreen(props) {
     const { navigation } = props
     const [search, setSearch] = useState('')
-    // const [listdata,setListdata]=useState([])
-    const [loading, setLoading] = useState(false)
-    const { listdata, shop,listuser } = useContext(MyContext);
+    const [listdata, setListdata] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    // useEffect(()=>{
-    //     getData();
-    // },[])
-    // const getData= async()=>{
-    //     console.log("getdata "+search)
-    //     setLoading(true)
-    //     // const q = query(collection(db, "THUCPHAM"), 
-    //     // where("ten", '>=', search), 
-    //     // // where("ten", '<=', search + '\uf8ff'), 
-    //     // // where("soluongcon", ">", 0), 
-    //     // // orderBy("sosao",'desc')
-    //     // limit(20));
-    //     // const querySnapshot = await getDocs(q);
-    //     // const list=[]
-    //     // querySnapshot.forEach((doc) => {
-    //     //     list.push({id:doc.id,...doc.data()})
-    //     //     console.log(doc.data().ten)
-    //     //   });
-    //     // setListdata(list)
+    useEffect(() => {
+        try {
+            const handleGetProduct = async () => {
+                const querySnapshot = await getDocs(collection(db, "THUCPHAM"));
+                const newData = []
+                querySnapshot.forEach((doc) => {
+                    const docData = doc.data();
+                    const dataWithId = { ...docData, id: doc.id };
+                    newData.push(dataWithId);
+                });
+                setListdata(newData)
+            }
+            handleGetProduct();
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            setTimeout(() => {
+                setLoading(false)
+            }, 2000)
+        }
+    }, [])
 
-    //     const q = query(
-    //         collection(db, "THUCPHAM"),
-    //         orderBy("soluongdaban",'desc')
-    //       );
-    //       const querySnapshot = await getDocs(q);
-    //       const results = [];
-    //       querySnapshot.forEach((doc) => {
-    //         const data = doc.data();
-    //         results.push({
-    //           id: doc.id,
-    //           ...data
-    //         });
-    //       });
-    //       setListdata(results)
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //       }, 500);
-
-    // };
     const searched = () => listdata.filter(item => item.ten.toLowerCase().includes(search.toLowerCase()))
     // DATA.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
     const [isSearch, setIsSearch] = useState(false)
     useEffect(() => {
         setIsSearch(true);
     });
+    if(loading){
+        return(
+            <View style={{flex:1, backgroundColor:'#fff'}}>
+
+            </View>
+        )
+    }
+    else{
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -105,7 +102,7 @@ function SearchScreen(props) {
             </View>}
 
         </SafeAreaView>
-    )
+    )}
 };
 export default SearchScreen;
 

@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         alignSelf:'center',
     },
     textInput: {
-        
+        color:'#333',
         fontSize:20,
         flex:1,
         paddingVertical:0,
