@@ -27,7 +27,6 @@ function UITab() {
         try {
             const userCredential = await AsyncStorage.getItem('user');
             if (userCredential) {
-              console.error(JSON.parse(userCredential));
                 dispatch(addUser(JSON.parse(userCredential)))
             } 
         } catch (error) {

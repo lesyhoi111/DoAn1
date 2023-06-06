@@ -9,6 +9,7 @@ import Lottie from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux'
 import { SignOut } from './components/Redux/CurentUserSlice';
+import { auth, updateProfile,sendEmailVerification  } from '../firebase/firebase';
 const { width, height } = Dimensions.get('window');
 function Home(props) {
     const {navigation,route}=props
@@ -16,15 +17,9 @@ function Home(props) {
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
 
-    const removeItemFromStorage = async (key) => {
-        try {
-            await AsyncStorage.removeItem(key);
-            dispatch(SignOut(null));
-            console.log('Item removed successfully.');
-            navigation.navigate('Login')
-        } catch (error) {
-            console.log('Error removing item from AsyncStorage:', error);
-        }
+    const removeItemFromStorage =  () => {
+        const user = auth.currentUser;
+        console.log(user.emailVerified)
     };
    
     return (
@@ -53,7 +48,7 @@ function Home(props) {
                 
                 </View>
                     <Search white={false}></Search>   
-                    <TouchableOpacity style={{ height:35,width:330,position:'absolute',left:15,top:213}} onPress={()=>navigate('SearchScreen')}>
+                    <TouchableOpacity style={{ height:35,width:330,position:'absolute',left:15,top:213}} onPress={removeItemFromStorage}>
                         </TouchableOpacity>      
                 <IngredientSale nav={navigation}></IngredientSale>
                 <TapRecipe nav={navigation}></TapRecipe>

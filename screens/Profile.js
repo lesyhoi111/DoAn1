@@ -98,7 +98,7 @@ function Profile(props) {
     const removeItemFromStorage = async (key) => {
         try {
             await AsyncStorage.removeItem(key);
-            dispatch(SignOut());
+            dispatch(SignOut(null));
             console.log('Item removed successfully.');
             navigation.navigate('Login')
         } catch (error) {

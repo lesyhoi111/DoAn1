@@ -18,6 +18,7 @@ import Address from './screens/Address'
 import Home from './screens/Home'
 import OderComplete from './screens/OderComplete'
 import MyAccount from './screens/MyAccount'
+import ManageOrder from './screens/ManageOrder'
 import { collection, query, where, getDocs, orderBy, limit,onSnapshot } from "firebase/firestore";
 import { db } from './firebase/index'
 import store from "./screens/components/Redux/Store";
@@ -25,6 +26,7 @@ import { Provider } from "react-redux";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Lottie from 'lottie-react-native';
+
 
 let listdata=[];
 let shop=[];
@@ -35,7 +37,7 @@ export const MyContext = createContext();
 function App(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [isLogin, setIsLogin] = useState(false)
-   
+    const [isAdmin, setIsAdmin] = useState(false)
     // useEffect(() => {
     //     const getUserCredential = async () => {
     //         try {
@@ -67,9 +69,11 @@ function App(props) {
             try {
                 const userCredential = await AsyncStorage.getItem('user');
                 if (userCredential) {
+                    const user = JSON.parse(userCredential)
                     setIsLogin(true);
-                    console.error('you signed in');
-                    console.log(userCredential);
+                    setIsAdmin(user.emailVerified)
+                    console.log('you signed in');
+                    
                 } else {
                     setIsLogin(false);
                     console.log('you signed out');
@@ -92,7 +96,6 @@ function App(props) {
             const querySnapshot = await getDocs(q);
             listdata=[]
             querySnapshot.forEach((doc) => {
-                console.error("thucpham");
                 listdata.push({ id: doc.id, ...doc.data() });
             });
         } catch (error) {
@@ -106,7 +109,6 @@ function App(props) {
             const thucphamQuery = query(thucphamRef,);
             const querySnapshot = await getDocs(thucphamQuery);
             querySnapshot.forEach((doc) => {
-                console.error("shop");
               shop.push({ id: doc.id, ...doc.data() });
           });
           } catch (error) {
@@ -130,7 +132,7 @@ function App(props) {
               });
             });
           } catch (error) {
-            console.error(error)
+            console.log(error)
           }
       }
 
@@ -143,7 +145,7 @@ function App(props) {
         <Provider store={store}>
             <MyContext.Provider value={{ listdata, shop,listuser }}>
                 <NavigationContainer>
-                    <Stack.Navigator initialRouteName={isLogin ? "UITab" : "BoardingSlider"} screenOptions={{ headerShown: false }}>
+                    <Stack.Navigator initialRouteName={isLogin ?isAdmin?"ManageOrder": "UITab" : "BoardingSlider"} screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="BoardingSlider" component={BoardingSlider} />
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
@@ -160,6 +162,7 @@ function App(props) {
                         <Stack.Screen name="MyAccount" component={MyAccount} />
                         <Stack.Screen name="Home" component={Home} />
                         <Stack.Screen name="OderComplete" component={OderComplete} />
+                        <Stack.Screen name="ManageOrder" component={ManageOrder} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </MyContext.Provider>

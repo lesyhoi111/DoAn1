@@ -42,7 +42,11 @@ function Login(props) {
                 setEmail('')
                 setLoading(true);
                 setTimeout(() => {
-                    navigate('UITab')
+                    if(userCredential.user.emailVerified){
+                        navigate('ManageOrder')
+                    }else{
+                        navigate('UITab')
+                    }
                     setLoading(false);
                 }, 1000);
                 // ...

@@ -98,7 +98,7 @@ function AddAddress(props) {
                     navigation.goBack();
                 }, 1000)
             } catch (error) {
-                console.error(error)
+                console.log(error)
             }
         }
     }
