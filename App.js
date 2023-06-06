@@ -72,7 +72,7 @@ function App(props) {
                     const user = JSON.parse(userCredential)
                     setIsLogin(true);
                     setIsAdmin(user.emailVerified)
-                    console.error('you signed in');
+                    console.log('you signed in');
                     
                 } else {
                     setIsLogin(false);
@@ -96,7 +96,6 @@ function App(props) {
             const querySnapshot = await getDocs(q);
             listdata=[]
             querySnapshot.forEach((doc) => {
-                console.error("thucpham");
                 listdata.push({ id: doc.id, ...doc.data() });
             });
         } catch (error) {
@@ -110,7 +109,6 @@ function App(props) {
             const thucphamQuery = query(thucphamRef,);
             const querySnapshot = await getDocs(thucphamQuery);
             querySnapshot.forEach((doc) => {
-                console.error("shop");
               shop.push({ id: doc.id, ...doc.data() });
           });
           } catch (error) {
@@ -134,7 +132,7 @@ function App(props) {
               });
             });
           } catch (error) {
-            console.error(error)
+            console.log(error)
           }
       }
 

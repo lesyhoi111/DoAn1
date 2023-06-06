@@ -70,7 +70,7 @@ const Order = (props) => {
                 // setLoading(false)
             }, 3000)
         } catch (error) {
-            console.error(error)
+            console.log(error)
         }
     }
 

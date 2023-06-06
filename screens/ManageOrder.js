@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, SafeAreaView, View, TouchableOpacity, ScrollView, FlatList,Dimensions } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, View, TouchableOpacity, ScrollView, FlatList, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Color from '../src/Color'
 import {
   collection,
@@ -12,22 +13,27 @@ import {
   query
 } from "../firebase/firebase";
 import Lottie from 'lottie-react-native';
+import { useDispatch } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SignOut } from './components/Redux/CurentUserSlice';
 const listTab = ['Tất cả', 'Chờ xác nhận', 'Hoàn thành', 'Đã hủy']
 function ManageOrder(props) {
+  const {navigation}= props
   const [tabSelect, setTabSelect] = useState(0);
   const [order, setOrder] = useState([])
   const [thucpham, setThucpham] = useState([])
   const [listdataDis, setListdataDis] = useState([])
   const [isloading, setIsloading] = useState(false)
   let a = 0;
-  const {width,height} = Dimensions.get('window')
+  const { width, height } = Dimensions.get('window')
+  const dispatch = useDispatch()
   useEffect(() => {
     switch (tabSelect) {
       case 0:
         setListdataDis(order)
         break;
       case 1:
-        setListdataDis(order.filter((item) => {  return item.trangthai == "Chờ xác nhận" }))
+        setListdataDis(order.filter((item) => { return item.trangthai == "Chờ xác nhận" }))
         break;
       case 2:
         setListdataDis(order.filter((item) => { return item.trangthai == "Hoàn thành" }))
@@ -61,25 +67,38 @@ function ManageOrder(props) {
     setThucpham(ListTP)
   }
   const handleConfirmOrder = async (idUser, idOrder) => {
-    try{
+    try {
       setIsloading(true)
       const orderRef = doc(db, `KHACHHANG/${idUser}/DONHANG/${idOrder}`);
       await updateDoc(orderRef, {
         trangthai: "Hoàn thành"
       });
       getListorder()
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
+  const removeItemFromStorage = async (key) => {
+    try {
+        await AsyncStorage.removeItem(key);
+        dispatch(SignOut(null));
+        console.log('Item removed successfully.');
+        navigation.navigate('Login')
+    } catch (error) {
+        console.log('Error removing item from AsyncStorage:', error);
+    }
+};
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      { order.length > 0 && thucpham.length > 0 ?
-      
+      {order.length > 0 && thucpham.length > 0 ?
+
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-        {isloading?<View style={{width:width,height:height,position:'absolute',zIndex:1, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent:'center',alignItems:'center'}}>
-        <Lottie source={{uri:'https://assets10.lottiefiles.com/packages/lf20_rwq6ciql.json'}} autoPlay loop />
-        </View>:null}
+          {isloading ? <View style={{ width: width, height: height, position: 'absolute', zIndex: 1, backgroundColor: 'rgba(0, 0, 0, 0.3)', justifyContent: 'center', alignItems: 'center' }}>
+            <Lottie source={{ uri: 'https://assets10.lottiefiles.com/packages/lf20_rwq6ciql.json' }} autoPlay loop />
+          </View> : null}
+          <TouchableOpacity onPress={()=>removeItemFromStorage('user')} style={{ width: 40, height: 40, position: 'absolute', zIndex: 1, top: 10, right: 10, borderRadius: 20, backgroundColor: 'rgba(0,255,255,0.3)', justifyContent: 'center', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="logout" style={{ fontSize: 20, color: '#fff', marginLeft: 3 }}></MaterialCommunityIcons>
+          </TouchableOpacity>
           <View style={styles.header}>
             <Text style={styles.header_login}>Xác nhận đơn hàng</Text>
             <View></View>
@@ -93,7 +112,7 @@ function ManageOrder(props) {
               ))}
             </ScrollView>
           </View>
-         
+
           <FlatList showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
               <View keyExtractor={item => item.id} style={{
