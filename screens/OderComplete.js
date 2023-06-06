@@ -14,13 +14,13 @@ const OderComplete = (props) => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.lottie}>
-                <Lottie source={require('../src/Lottie/loading.json')} autoPlay loop />
+                <Lottie source={require('../src/Lottie/firework.json')} autoPlay loop />
             </View>
             <View style={styles.boxTxt}>
                 <Text style={styles.header}>Đặt hàng thành công!</Text>
                 <Text style={styles.txt}>"Đơn hàng đang chờ được xác nhận. Hãy kiểm tra đơn hàng trong lịch sử giao hàng"</Text>
             </View>
-            <TouchableOpacity style={styles.button} onPress={()=>{console.log(rating)}}>
+            <TouchableOpacity style={styles.button} onPress={()=>{ props.navigation.goBack()}}>
                 <Text style={styles.txtButton}>Hoàn thành</Text>
             </TouchableOpacity>
         </ScrollView>

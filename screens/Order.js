@@ -10,7 +10,7 @@ import ModalVoucher from './components/ModalVoucher';
 import Color from '../src/Color';
 import { MyContext } from '../App';
 import { useSelector } from "react-redux";
-import { collection, query, addDoc, getDocs, doc, where } from "firebase/firestore";
+import { collection, query, addDoc, getDocs, doc, updateDoc } from "firebase/firestore";
 import { auth } from '../firebase/firebase'
 import { db } from '../firebase/index'
 import moment from 'moment';
@@ -116,28 +116,34 @@ const Order = (props) => {
                 const khachhangDocRef = doc(db, "KHACHHANG", user.uid);
                 const giohangCollectionRef = collection(khachhangDocRef, "DONHANG");
                 const docRef = await addDoc(giohangCollectionRef, {
+                    danhgia:false,
                     dathanhtoan: false,
-                    diachigiao: addressSelect.diachi,
+                    diachigiao: addressSelect.motachitiet+','+ addressSelect.diachi,
                     loinhan: mess,
                     ngaydat: moment(Date.now()).format("DD-MM-YYYY"),
                     tongtien: (total - voucherSelect.priceOf + 15000),
                     trangthai: "Chờ xác nhận"
                 });
-                itemFood.forEach(async(element) => {
-                    const thucphamDoc = doc(khachhangDocRef, "DONHANG",docRef.id);
-                    const thucphamRef = collection(thucphamDoc, "THUCPHAM");
-                    const docTPRef = await addDoc(thucphamRef, {
-                        giatien: (element.product.giagoc * (100 - element.product.giamgia) / 100),
-                        matp: element.product.id,
-                        soluong: element.num,
-                        ten: element.product.ten
+                console.log("add")
+                setTimeout(() => {
+                    itemFood.forEach(async(element) => {
+                        console.log(element)
+                        const thucphamDoc = doc(khachhangDocRef, "DONHANG",docRef.id);
+                        const thucphamRef = collection(thucphamDoc, "THUCPHAM");
+                        const docTPRef = await addDoc(thucphamRef, {
+                            giatien: (element.product.giagoc * (100 - element.product.giamgia) / 100),
+                            matp: element.product.id,
+                            soluong: element.num,
+                            ten: element.product.ten
+                        });
+                        console.log(element.product.id)
+                        const TPDocRef = doc(db, "THUCPHAM", element.product.id);
+                        const docRef1 = await updateDoc(TPDocRef, {
+                            soluongdaban:element.product.soluongdaban+1,
+                            soluongcon:element.product.soluongcon-1
+                        });
                     });
-                    const TPDocRef = doc(db, "THUCPHAM", element.product.id);
-                    const docRef = await updateDoc(TPDocRef, {
-                        soluongdaban:element.product.soluongdaban+1,
-                        soluongcon:element.product.soluongcon-1
-                    });
-                });
+                }, 1000);
                 setTimeout(() => {
                     // setListAdd(result);
                     setIsloading(false);
@@ -152,6 +158,24 @@ const Order = (props) => {
         }
     }
 
+    const updateDB=(docRef)=>{
+        itemFood.forEach(async(element) => {
+            console.log(element)
+            const thucphamDoc = doc(khachhangDocRef, "DONHANG",docRef.id);
+            const thucphamRef = collection(thucphamDoc, "THUCPHAM");
+            const docTPRef = await addDoc(thucphamRef, {
+                giatien: (element.product.giagoc * (100 - element.product.giamgia) / 100),
+                matp: element.product.id,
+                soluong: element.num,
+                ten: element.product.ten
+            });
+            const TPDocRef = doc(db, "THUCPHAM", element.product.id);
+            const docRef1 = await updateDoc(TPDocRef, {
+                soluongdaban:element.product.soluongdaban+1,
+                soluongcon:element.product.soluongcon-1
+            });
+        });
+    }
     const Item = (item, index) => {
         return (
             <View style={styles.boxItem} key={index}>

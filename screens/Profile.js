@@ -159,7 +159,7 @@ function Profile(props) {
                             </TouchableOpacity>
                         </View>
                         <View style={{ margin: 15, backgroundColor: 'white', borderRadius: 10, marginBottom: 50 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }} onPress={() => navigate('swipe')}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }} >
                                 <Ionicons name='notifications-outline' size={25} color={'#a9a9a9'}></Ionicons>
                                 <View style={{ backgroundColor: 'red', position: 'absolute', borderRadius: 50, padding: 2, left: 35, top: 12 }}><Text style={{ color: 'white', fontWeight: '500' }}>20</Text></View>
                                 <View style={{ flex: 1, paddingLeft: 15 }}>

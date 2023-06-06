@@ -7,21 +7,21 @@ import { useSelector } from "react-redux";
 import { SwipeListView } from 'react-native-swipe-list-view';
 // import { DATA } from './components/DATA';
 import color from '../src/Color';
-import { collection, query, documentId, getDocs, doc, where } from "firebase/firestore";
+import { collection, query, documentId, getDocs, doc, where,deleteDoc } from "firebase/firestore";
 import { db } from '../firebase/index'
 import { MyContext } from '../App';
 import { async } from '@firebase/util';
-let result=[];
+let result = [];
 const Cart = (props) => {
   const { navigation } = props
   // const [listId, setListId] = useState([]);
-  const { listdata,shop,listuser } = useContext(MyContext);
+  const { listdata, shop, listuser } = useContext(MyContext);
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const user = useSelector((state) => state.CurentUser)
   const items = useSelector(state => state.cart.items);
 
-  const total = items.reduce((acc, item) => acc + ((item.product.giagoc*(100-item.product.giamgia)/100)*item.num), 0);
+  const total = items.reduce((acc, item) => acc + ((item.product.giagoc * (100 - item.product.giamgia) / 100) * item.num), 0);
 
   useEffect(() => {
     console.log("use")
@@ -37,12 +37,12 @@ const Cart = (props) => {
       const khachhangDocRef = doc(db, "KHACHHANG", user.uid);
       const giohangCollectionRef = collection(khachhangDocRef, "GIOHANG");
       const querySnapshot = await getDocs(giohangCollectionRef);
-      result = await querySnapshot.docs.map((doc) => ({id:doc.id, ...doc.data()}));
-     
-        setTimeout(() => {
-          getdata(result);
-          // setLoading(false)
-          },3000)
+      result = await querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      setTimeout(() => {
+        getdata(result);
+        // setLoading(false)
+      }, 3000)
     } catch (error) {
       console.error(error)
     }
@@ -51,7 +51,7 @@ const Cart = (props) => {
 
   const getdata = async (listId) => {
     try {
-     setLoading(true)
+      setLoading(true)
       const matpList = listId.map((item) => item.id);
       console.log(matpList)
       const thucphamRef = collection(db, "THUCPHAM");
@@ -68,7 +68,7 @@ const Cart = (props) => {
         setData(thucphamList);
         console.log(Data)
         setLoading(false)
-        },1000)
+      }, 1000)
     } catch (error) {
       console.error(error)
     }
@@ -76,7 +76,8 @@ const Cart = (props) => {
 
   const HiddenItemWithActions = props => {
     const {
-      swipeAnimatedValue
+      swipeAnimatedValue,
+      onDelete
     } = props;
 
     return (
@@ -84,7 +85,7 @@ const Cart = (props) => {
 
         <TouchableOpacity
           style={[styles.backRightBtn, styles.backRightBtnRight]}
-          onPress={() => { }}>
+          onPress={() => { onDelete() }}>
           <Animated.View
             style={
               {
@@ -114,35 +115,49 @@ const Cart = (props) => {
       <HiddenItemWithActions
         data={data}
         rowMap={rowMap}
-        onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onClose={() => closeRow(rowMap, data.item.id.trim())}
+        onDelete={() => deleteRow(rowMap, data.item.id.trim())}
       />
     );
   };
+  const deleteRow = async (rowMap, rowKey) => {
+    const newData = [...Data];
+    const prevIndex = Data.findIndex(item => item.id == rowKey);
+    newData.splice(prevIndex, 1);
+    setData(newData);
+    try {
+      const khDocRef = doc(db, "KHACHHANG", user.uid);
+      const ghDocRef = doc(khDocRef, "GIOHANG", rowKey);
+      const docRef = await deleteDoc(ghDocRef);
+      setTimeout(() => {
+        Alert.alert("Thông báo!", "Xóa thành công");
+      }, 1000)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const getNameShop = (item) => {
     const itemThis = shop.find((itemid, index) => {
-      console.log(item.mach+"aaa")
-      console.log(itemid.id)
       return item.mach.trim() == itemid.id.trim()
     })
     return itemThis
   }
 
   const soluong = (item) => {
-    const itemThis =  result.find((itemid, index) => {
+    const itemThis = result.find((itemid, index) => {
       return item.id == itemid.id
     })
     return itemThis.soluong
   }
 
-const handleOder=()=>{
-  if(items.length>0){
-    navigation.navigate('Order')
-  }else{
-    Alert.alert("Thông báo!","Mời chọn thực phẩm muốn mua")
+  const handleOder = () => {
+    if (items.length > 0) {
+      navigation.navigate('Order')
+    } else {
+      Alert.alert("Thông báo!", "Mời chọn thực phẩm muốn mua")
+    }
   }
-}
 
   return (
     <View style={styles.container}>
@@ -156,7 +171,7 @@ const handleOder=()=>{
       </View>
       <View style={styles.content}>
         <View style={styles.flatList}>
-          {loading==false?  Data.length > 0 ?
+          {loading == false ? Data.length > 0 ?
             <SwipeListView
               data={Data}
               showsVerticalScrollIndicator={false}
@@ -168,9 +183,10 @@ const handleOder=()=>{
               previewOpenDelay={3000}
               renderItem={({ item }) => <ProductItemHz
                 onPress={() => navigation.navigate('ProductDetail',
-                  {itemDetail : item ,
-                  shopOfPro:getNameShop(item)
-                    }
+                  {
+                    itemDetail: item,
+                    shopOfPro: getNameShop(item)
+                  }
                 )}
                 item={item}
                 num={soluong(item)}
@@ -196,7 +212,7 @@ const handleOder=()=>{
           <Text style={styles.money}>{total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <TouchableOpacity style={styles.btnAddToCart} onPress={() => {handleOder()}}>
+          <TouchableOpacity style={styles.btnAddToCart} onPress={() => { handleOder() }}>
             <Text style={styles.btnText}>ĐẶT HÀNG</Text>
           </TouchableOpacity>
         </View>
