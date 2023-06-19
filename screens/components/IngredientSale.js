@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, SafeAreaView, StyleSheet, Text, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Pressable, FlatList, ToastAndroid } from 'react-native';
 import ItemIngredientSale from './ItemIngredientSale'
@@ -6,39 +6,33 @@ import { collection, query, where, getDocs, orderBy, limit, addDoc, doc, setDoc,
 import { db } from '../../firebase/index'
 import color from '../../src/Color';
 import { useSelector } from 'react-redux';
-
+import { MyContext } from '../../App';
 
 function IngredientSale(props) {
     const { navigation, route,nav } = props
-    // const { navigate, goBack } = navigation
-    const [listdata, setListdata] = useState([])
+    const { listdata, shop, listuser } = useContext(MyContext);
+    const [listRecommend, setListRecommend] = useState([])
     const [loading, setLoading] = useState(false)
     const user = useSelector((state) =>state.CurentUser)
 
     useEffect(() => {
-        getData()
+        getRecommendIng();
 
     }, [])
-    const getData = async () => {
-        setLoading(true)
-        const q = query(collection(db, "THUCPHAM"),
-            where("giamgia", ">", 0),
-            // where("soluongcon", ">", 0), 
-            orderBy("giamgia", 'desc'),
-            // orderBy("sosao",'desc')
-            limit(10));
-        const querySnapshot = await getDocs(q);
-        const list = []
-        querySnapshot.forEach((doc) => {
-            list.push({ id: doc.id, ...doc.data() })
-            console.log(doc.data().ten)
-        });
-        setListdata(list)
-        setTimeout(() => {
-            setLoading(false);
-        }, 500);
-
-    };
+    const getRecommendIng=async()=>{
+        const url = 'http://192.168.137.1:5000/recommend?idUser='+user.uid;
+        console.log(url)
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data);
+            setListRecommend(listdata.filter((item) => {  return data.includes(item.id.trim()) }))
+        } catch (error) {
+            console.error(error);
+        }
+        
+    }
+   
     const DATA = [
         {
             id: '002',
@@ -77,9 +71,9 @@ function IngredientSale(props) {
                     <Text>View All</Text>
                 </Pressable>
             </View>
-            {loading == false ?
+            {listRecommend.length >0 ?
                 <FlatList horizontal={true}
-                    data={listdata}
+                    data={listRecommend}
                     renderItem={({ item }) => <ItemIngredientSale item={item} short={false}
                     onPressCartPlus={()=>handleAddToCart(item)}
                         onPress={() => nav.navigate('ProductDetail',

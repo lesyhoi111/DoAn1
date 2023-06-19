@@ -134,7 +134,7 @@ function ManageOrder(props) {
               }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomColor: Color.backgroundDefault, borderBottomWidth: 1, paddingVertical: 10 }}>
                   <Text style={{ fontSize: 18, color: '#333' }}>Tình trạng đơn hàng:</Text>
-                  <Text style={{ fontSize: 18, color: 'red', fontWeight: '500' }}>{item.trangthai}</Text>
+                  <Text style={{ fontSize: 18, color: item.trangthai == "Hoàn thành" ? 'green' : (item.trangthai == "Đã hủy" ? 'red' : Color.colorStar), fontWeight: '500' }}>{item.trangthai}</Text>
                 </View>
                 <View style={{ borderBottomColor: Color.backgroundDefault, borderBottomWidth: 1, width: "100%" }}>
                   {thucpham
@@ -174,7 +174,7 @@ function ManageOrder(props) {
           </FlatList>
         </View> :
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 25 }}>loading</Text>
+          <Lottie source={{ uri: 'https://assets10.lottiefiles.com/packages/lf20_rwq6ciql.json' }} autoPlay loop />
         </View>}
     </SafeAreaView>
   )

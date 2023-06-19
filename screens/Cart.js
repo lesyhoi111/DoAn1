@@ -26,8 +26,7 @@ const Cart = (props) => {
   useEffect(() => {
     console.log("use")
     getlistmatp();
-    // getdata();
-    // getListShop();
+   
   }, [])
 
   const getlistmatp = async () => {
@@ -159,6 +158,14 @@ const Cart = (props) => {
     }
   }
 
+  const handleRecommend = () => {
+    if (items.length > 0) {
+      navigation.navigate('RecommendFood')
+    } else {
+      Alert.alert("Thông báo!", "Mời chọn thực phẩm dự định sẽ mua")
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -217,6 +224,14 @@ const Cart = (props) => {
           </TouchableOpacity>
         </View>
       </View>
+      <TouchableOpacity style={{
+        position:'absolute',
+        bottom:75,
+        right:5,
+        }} onPress={()=>{handleRecommend()}}>
+          <AntDesign name='aliwangwang' style={[styles.iconRecommend, { transform: [{ scaleX: -1 }] }]}></AntDesign>
+          <Text style={styles.txtRecommend}>Gợi ý</Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -318,6 +333,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20
   },
+  iconRecommend: {
+    color: color.main,
+    fontSize: 50
+  },
+  txtRecommend:{
+    fontSize:14,
+    color:'white',
+    fontWeight:'bold',
+    position:'absolute',
+    bottom:6,
+    textAlign:'center',
+    width:'100%',
+    paddingRight:3
+  }
 });
 
 export default Cart;

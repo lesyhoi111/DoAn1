@@ -39,7 +39,7 @@ function Voucher(props) {
         ...doc.data()
       }));
       setTimeout(() => {
-        setListVou(result.filter((item) => { console.log(item.id); return listid.includes(" " + item.id) }))
+        setListVou(result.filter((item) => { console.log(item.id); return listid.includes(item.id.trim()) }))
         setIsloading(false)
       }, 1000)
     } catch (error) {

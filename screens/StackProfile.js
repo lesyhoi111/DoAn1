@@ -8,6 +8,8 @@ import Address from './Address'
 import AddAddress from './AddAddress'
 import EditAdress from './EditAdress'
 import History from './History'
+import RecommendFood from './RecommendFood'
+import RecommendFoodDetail from './RecommendFoodDetail'
 import Voucher from './Voucher'
 import ReviewPro from './ReviewPro'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,7 +20,6 @@ function StackProfile(props) {
         
             <Stack.Navigator initialRouteName="Profile"  screenOptions={{headerShown:false}}>
                 <Stack.Screen name="Profile" component={Profile} />
-                {/* <Stack.Screen name="MyAccount" component={MyAccount} /> */}
                 <Stack.Screen name="Address" component={Address} />
                 <Stack.Screen name="AddAddress" component={AddAddress} />
                 <Stack.Screen name="EditAdress" component={EditAdress} />

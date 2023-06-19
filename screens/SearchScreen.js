@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
 import Search from './components/Search';
 import color from '../src/Color';
@@ -50,6 +50,7 @@ function SearchScreen(props) {
     useEffect(() => {
         setIsSearch(true);
     });
+    
     if(loading){
         return(
             <View style={{flex:1, backgroundColor:'#fff'}}>
@@ -101,6 +102,7 @@ function SearchScreen(props) {
             {loading == true && <View style={{ flex: 1, backgroundColor: 'red', position: 'absolute', height: height, width: width }}>
             </View>}
 
+           
         </SafeAreaView>
     )}
 };
@@ -152,5 +154,19 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    iconRecommend: {
+        color: color.main,
+        fontSize: 53
+      },
+      txtRecommend:{
+        fontSize:14,
+        color:'white',
+        fontWeight:'bold',
+        position:'absolute',
+        bottom:7,
+        textAlign:'center',
+        width:'100%',
+        paddingRight:3
+      }
 })

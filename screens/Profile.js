@@ -24,20 +24,7 @@ function Profile(props) {
     const { navigate, goBack } = navigation
     const { loading, setLoading } = useState(true)
     const dispatch = useDispatch()
-    // const { loading, setLoading } = useState(false)
-    // const [myuser, setMyuser] = useState({
-    //     anhdaidien: "",
-    //     id: "",
-    //     ten: "",
-    //     email: "",
-    //     password: "",
-    //     ngaythamgia: "",
-    //     magiamgiadadung: [],
-    //     sdt: "00",
-    //     ngaysinh: "",
-    //     sotien: 0,
-    //     uid: ""
-    // })
+ 
 
     const user = useSelector((state) => state.CurentUser)
     const { listdata, shop, listuser } = useContext(MyContext);
@@ -118,7 +105,7 @@ function Profile(props) {
 
                     <ScrollView horizontal={false} style={{ backgroundColor: '#f1f1f1', paddingTop: 15 }}>
                         <View style={{ margin: 15, backgroundColor: 'white', borderRadius: 10 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }} onPress={()=>{navigate('ReviewPro')}}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 20 }} onPress={()=>{navigate('RecommendFood')}}>
                                 <MaterialIcons name='payment' size={25} color={'#a9a9a9'}></MaterialIcons>
                                 <View style={{ flex: 1, paddingLeft: 15 }}>
                                     <Text style={{ color: 'black', fontSize: 20, fontWeight: '400' }}>Payment Methods</Text>

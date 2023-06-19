@@ -11,6 +11,8 @@ import Register from './screens/Register'
 import DetailStore from './screens/DetailStore'
 import Store from './screens/Store'
 import Order from './screens/Order'
+import RecommendFood from './screens/RecommendFood'
+import RecommendFoodDetail from './screens/RecommendFoodDetail'
 import IngredientSale from './screens/components/IngredientSale'
 import TapRecipe from './screens/components/TapRecipe'
 import TapRecipeStore from './screens/components/TapRecipeStore'
@@ -151,6 +153,8 @@ function App(props) {
                         <Stack.Screen name="Register" component={Register} />
                         <Stack.Screen name="UITab" component={UITab} />
                         <Stack.Screen name="Cart" component={Cart} />
+                        <Stack.Screen name="RecommendFood" component={RecommendFood} />
+                        <Stack.Screen name="RecommendFoodDetail" component={RecommendFoodDetail} />
                         <Stack.Screen name="ProductDetail" component={ProductDetail} />
                         <Stack.Screen name="Store" component={Store} />
                         <Stack.Screen name="DetailStore" component={DetailStore} />
