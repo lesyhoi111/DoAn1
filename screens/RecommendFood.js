@@ -30,15 +30,16 @@ const RecommendFood = (props) => {
         // } catch (error) {
         //     console.log(error)
         // }
-        let strIng=""
+        let strIng="";
         itemFood.forEach((item) => {
+            console.log(item.product.keyword)
             if(strIng==""){
-                strIng=item.keyword
+                strIng=item.product.keyword
             }else{
-                strIng=strIng+",+"+item.keyword
+                strIng=strIng+",+"+item.product.keyword
             }
         })
-        const url = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=66fb37a492054912a2793de4cd7ec613&ingredients='+strIng+'&number=5&sort=max-used-ingredients';
+        const url = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=66fb37a492054912a2793de4cd7ec613&ingredients='+strIng+'&number=10&sort=max-used-ingredients';
         // const options = {
         //     method: 'GET',
         //     headers: {

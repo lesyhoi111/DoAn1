@@ -32,6 +32,25 @@ function IngredientSale(props) {
         }
         
     }
+    const getDataSale = async () => {
+        setLoading(true)
+        const q = query(collection(db, "THUCPHAM"),
+            where("giamgia", ">", 0),
+            orderBy("giamgia", 'desc'),
+            limit(10));
+        const querySnapshot = await getDocs(q);
+        const list = []
+        querySnapshot.forEach((doc) => {
+            list.push({ id: doc.id, ...doc.data() })
+            console.log(doc.data().ten)
+        });
+        setListdata(list)
+        setTimeout(() => {
+            setLoading(false);
+        }, 500);
+
+    };
+
    
     const DATA = [
         {
