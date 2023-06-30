@@ -9,17 +9,12 @@ import Color from "../../src/Color";
 import { SwipeListView } from 'react-native-swipe-list-view';
 const { width } = Dimensions.get('window');
 const ProductItemHz = (props) => {
-    const { item, onPress, shop,num } = props
+    const { item, onPress, shop,num, remove } = props
     const [number, setNumber] = useState(num)
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const handleNumberPlus = () => {
         setNumber(number + 1)
     }
-    useEffect(() => {
-        if (number < 1) {
-            setAddtoCart(null)
-        }
-    }, [number])
     const handleNumberSub = () => {
         if (number > 0) {
             setNumber(number - 1)

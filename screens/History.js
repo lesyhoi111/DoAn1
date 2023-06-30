@@ -191,7 +191,7 @@ function History(props) {
               </View>
             }
             data={listdataDis}
-            keyExtractor={item => item.diachigiao}>
+            keyExtractor={item => item.id}>
           </FlatList>
         </View> :
         <View style={{ flex: 1 }}>

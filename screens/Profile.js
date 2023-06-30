@@ -30,7 +30,7 @@ function Profile(props) {
     const { listdata, shop, listuser } = useContext(MyContext);
     const [myuser, setMyuser] = useState({
         cuahangdangtheodoi:[],
-        anhdaidien: "",
+        anhdaidien: null,
         id: "",
         ten: "",
         email: "",

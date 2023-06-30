@@ -7,10 +7,11 @@ import { useSelector } from "react-redux";
 import { SwipeListView } from 'react-native-swipe-list-view';
 // import { DATA } from './components/DATA';
 import color from '../src/Color';
-import { collection, query, documentId, getDocs, doc, where,deleteDoc } from "firebase/firestore";
+import { collection, query, documentId, getDocs, doc, where, deleteDoc } from "firebase/firestore";
 import { db } from '../firebase/index'
 import { MyContext } from '../App';
 import { async } from '@firebase/util';
+import Lottie from 'lottie-react-native';
 let result = [];
 const Cart = (props) => {
   const { navigation } = props
@@ -22,12 +23,12 @@ const Cart = (props) => {
   const items = useSelector(state => state.cart.items);
 
   const total = items.reduce((acc, item) => acc + ((item.product.giagoc * (100 - item.product.giamgia) / 100) * item.num), 0);
-
   useEffect(() => {
-    console.log("use")
-    getlistmatp();
-   
-  }, [])
+    const unsubscribe = navigation.addListener('focus', () => {
+      getlistmatp();
+    });
+    return unsubscribe;
+}, [navigation]);
 
   const getlistmatp = async () => {
     setLoading(true)
@@ -41,7 +42,7 @@ const Cart = (props) => {
       setTimeout(() => {
         getdata(result);
         // setLoading(false)
-      }, 3000)
+      }, 1000)
     } catch (error) {
       console.log(error)
     }
@@ -147,7 +148,7 @@ const Cart = (props) => {
     const itemThis = result.find((itemid, index) => {
       return item.id == itemid.id
     })
-    return itemThis.soluong
+    return itemThis?.soluong
   }
 
   const handleOder = () => {
@@ -207,8 +208,8 @@ const Cart = (props) => {
               <Text style={{ color: '#333', fontSize: 20, textAlign: 'center' }}>Giỏ hàng của bạn hiện không có sản phẩm nào!</Text>
             </View>
             :
-            <View style={{ alignItems: 'center', width: '100%' }}>
-              <Text style={{ color: '#333', fontSize: 20, textAlign: 'center' }}>Loading</Text>
+            <View style={{ alignItems: 'center', width: 100, height:100 }}>
+              <Lottie source={{ uri: 'https://assets10.lottiefiles.com/packages/lf20_rwq6ciql.json' }} autoPlay loop />
             </View>
           }
         </View>
@@ -225,13 +226,13 @@ const Cart = (props) => {
         </View>
       </View>
       <TouchableOpacity style={{
-        position:'absolute',
-        bottom:75,
-        right:5,
-        }} onPress={()=>{handleRecommend()}}>
-          <AntDesign name='aliwangwang' style={[styles.iconRecommend, { transform: [{ scaleX: -1 }] }]}></AntDesign>
-          <Text style={styles.txtRecommend}>Gợi ý</Text>
-        </TouchableOpacity>
+        position: 'absolute',
+        bottom: 75,
+        right: 5,
+      }} onPress={() => { handleRecommend() }}>
+        <AntDesign name='aliwangwang' style={[styles.iconRecommend, { transform: [{ scaleX: -1 }] }]}></AntDesign>
+        <Text style={styles.txtRecommend}>Gợi ý</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor:'#fff'
   },
   header: {
     height: 55,
@@ -337,15 +339,15 @@ const styles = StyleSheet.create({
     color: color.main,
     fontSize: 50
   },
-  txtRecommend:{
-    fontSize:14,
-    color:'white',
-    fontWeight:'bold',
-    position:'absolute',
-    bottom:6,
-    textAlign:'center',
-    width:'100%',
-    paddingRight:3
+  txtRecommend: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: 'bold',
+    position: 'absolute',
+    bottom: 6,
+    textAlign: 'center',
+    width: '100%',
+    paddingRight: 3
   }
 });
 

@@ -91,6 +91,7 @@ function App(props) {
     
     const getData = async () => {
         console.log("getdata")
+        listdata=[]
         // setLoading(true)
         try {
             const q = query(collection(db, "THUCPHAM"),

@@ -33,9 +33,9 @@ const RecommendFood = (props) => {
         let strIng=""
         itemFood.forEach((item) => {
             if(strIng==""){
-                strIng=item.keyword
+                strIng=item.product.keyword
             }else{
-                strIng=strIng+",+"+item.keyword
+                strIng=strIng+",+"+item.product.keyword
             }
         })
         const url = 'https://api.spoonacular.com/recipes/findByIngredients?apiKey=66fb37a492054912a2793de4cd7ec613&ingredients='+strIng+'&number=5&sort=max-used-ingredients';
@@ -62,6 +62,7 @@ const RecommendFood = (props) => {
         <SafeAreaView style={styles.container}>
              <View style={styles.header}>
                 <TouchableOpacity
+                onPress={()=>navigation.goBack()}
                     style={styles.btnBack}>
                     <Icon name="arrow-left" style={styles.iconBack} />
                 </TouchableOpacity>
