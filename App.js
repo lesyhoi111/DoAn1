@@ -96,7 +96,6 @@ function App(props) {
             const q = query(collection(db, "THUCPHAM"),
             );
             const querySnapshot = await getDocs(q);
-            listdata=[]
             querySnapshot.forEach((doc) => {
                 listdata.push({ id: doc.id, ...doc.data() });
             });
