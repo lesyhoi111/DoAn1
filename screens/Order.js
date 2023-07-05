@@ -203,6 +203,7 @@ const Order = (props) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity
+                onPress={()=>navigation.goBack()}
                     style={styles.btnBack}>
                     <Icon name="arrow-left" style={styles.iconBack} />
                 </TouchableOpacity>

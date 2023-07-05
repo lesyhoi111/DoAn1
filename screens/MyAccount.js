@@ -228,9 +228,9 @@ function MyAccount(props) {
         <View style={{ flexDirection: 'row', paddingVertical: 10, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 10 }}>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigation.goBack}><Ionicons name='arrow-back' size={25} color={'black'}></Ionicons></TouchableOpacity>
           <View style={[{ backgroundColor: 'white', alignItems: 'center', flex: 1 }]}></View>
-          <TouchableOpacity style={{ alignItems: 'center', backgroundColor: 'red', marginRight: 20 }} onPress={() => { uploadpic() }}>
+          {/* <TouchableOpacity style={{ alignItems: 'center', marginRight: 20 }} onPress={() => { uploadpic() }}>
             <Text style={{ fontSize: 20, fontWeight: '700', color: Color.main }}>upload</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { setVisible(true) }}>
             <Text style={{ fontSize: 20, fontWeight: '700', color: Color.main }}>Save</Text>
           </TouchableOpacity>

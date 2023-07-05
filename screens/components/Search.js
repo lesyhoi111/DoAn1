@@ -10,10 +10,7 @@ function Search(props) {
     return (
         <TouchableOpacity style={[styles.container,{backgroundColor:white==true?"white":color.backgroundMain,borderColor:white==true?color.main:"black"}]} >
             <Image source={require('../../src/images/search.png')} style={styles.img}  />
-            <TextInput placeholder='Find a ingredient' style={styles.textInput} placeholderTextColor={color.placeHoder} onChangeText={onChangeText} autoFocus={props.openSearch}></TextInput>
-            {/* <View style={styles.boxfilter}>
-                <Image source={require('../../src/images/filter.png')} style={[styles.img,{tintColor:'white',height:30,width:30,}]}/>
-            </View> */}
+            <TextInput placeholder='Tìm nguyên liệu' style={styles.textInput} placeholderTextColor={color.placeHoder} onChangeText={onChangeText} autoFocus={props.openSearch}></TextInput>
         </TouchableOpacity>
     )
 };

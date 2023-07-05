@@ -63,6 +63,7 @@ const RecommendFood = (props) => {
         <SafeAreaView style={styles.container}>
              <View style={styles.header}>
                 <TouchableOpacity
+                onPress={()=>navigation.goBack()}
                     style={styles.btnBack}>
                     <Icon name="arrow-left" style={styles.iconBack} />
                 </TouchableOpacity>

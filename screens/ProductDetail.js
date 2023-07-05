@@ -133,7 +133,7 @@ const ProductDetail = (props) => {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.btnIcon}
-                        onPress={navigation.goBack}
+                        onPress={()=>navigation.goBack()}
                     >
                         <Icon name="arrow-left" style={styles.back_Icon} />
                     </TouchableOpacity>
@@ -146,7 +146,7 @@ const ProductDetail = (props) => {
                     <Text umberOfLines={2} style={styles.productName}>{itemDetail.ten}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {Array(5).fill(0).map((_, id) => (<AntIcon key={id} name='star' style={[styles.star, { color: ((id + 1) <= itemDetail.sosao) ? color.colorStar : color.placeHoder }]}></AntIcon>))}
-                        <Text style={{ marginLeft: 5, fontSize: 20 }}>{itemDetail.sosao.toFixed(1)}</Text>
+                        <Text style={{ marginLeft: 5, fontSize: 20 }}>{itemDetail.sosao?.toFixed(1)}</Text>
                         <View style={{ width: 1, height: '100%', backgroundColor: '#AAAAAA', marginHorizontal: 10 }}></View>
                         <Text style={{ fontSize: 15, alignSelf: 'center', color: '#333' }}>{itemDetail.soluongdaban} Đã Bán</Text>
                     </View>
@@ -166,7 +166,7 @@ const ProductDetail = (props) => {
                 </View>
                 {Object.keys(shopPro).length != 0 ?
                 <TouchableOpacity style={{ backgroundColor: 'white', marginVertical: 7, padding: 10, flexDirection: 'row' }} 
-                onPress={() => navigation.navigate('Store',{shop:shopPro})}>
+                onPress={() => navigation.navigate('Store',{shop:shopPro, follow:follow})}>
                     <Image style={styles.imgShop} source={{ uri: shopPro.image }}></Image>
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={{ fontSize: 18, color: 'black' }}>{shopPro.ten}</Text>

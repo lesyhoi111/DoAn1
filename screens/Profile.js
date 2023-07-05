@@ -30,7 +30,7 @@ function Profile(props) {
     const { listdata, shop, listuser } = useContext(MyContext);
     const [myuser, setMyuser] = useState({
         cuahangdangtheodoi:[],
-        anhdaidien: "",
+        anhdaidien: null,
         id: "",
         ten: "",
         email: "",
@@ -79,9 +79,6 @@ function Profile(props) {
         }
     }
 
-    // function Profile(props) {
-    //     const {navigation,route}=props
-    //     const {navigate,goBack}=navigation
     const removeItemFromStorage = async (key) => {
         try {
             await AsyncStorage.removeItem(key);
@@ -94,7 +91,6 @@ function Profile(props) {
     };
     return (
         <SafeAreaView style={styles.container}>
-            {/* {loading == true ? */}
                 <View style={styles.container}>
                     <ImageBackground source={require('../src/images/ronaldo.jpeg')} resizeMode="cover" style={{ height: 160 }}>
                         <Lottie source={require('../src/Lottie/wave3.json')} autoPlay loop speed={1.5} style={{ height: height * 1.1, width: width * 1.1, position: 'absolute', top: -15 }} />
@@ -195,7 +191,7 @@ function Profile(props) {
                         }}>
                         <View style={{ width: 120 }}></View>
                         <View style={{ marginRight: 5, flex: 1, justifyContent: 'center' }}>
-                            <Text style={{ color: 'white', fontSize: 22, fontWeight: '500', marginBottom: 2 }}>{myuser.ten}</Text>
+                            <Text style={{ color: 'white', fontSize: 20, fontWeight: '500', marginBottom: 2 }}>{myuser.ten}</Text>
                             <Text style={{ color: 'white', fontSize: 16, fontWeight: '400' }}>(+84) {myuser.sdt.slice(1)}</Text>
                         </View>
                     </TouchableOpacity>
@@ -212,9 +208,6 @@ function Profile(props) {
                         <Lottie source={require('../src/Lottie/setting.json')} autoPlay loop style={{ height: 50, width: 50 }} />
                     </TouchableOpacity>
                 </View>
-                {/* : <View style={styles.container}>
-                    <Lottie source={require('../src/Lottie/loading.json')} autoPlay loop />
-                </View>} */}
         </SafeAreaView>
 
     )

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, SafeAreaView, StyleSheet, Text, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, Image, Pressable, FlatList, ToastAndroid } from 'react-native';
 import ItemIngredientSale from './ItemIngredientSale'
@@ -7,43 +7,43 @@ import { db } from '../../firebase/index'
 import color from '../../src/Color';
 import { useSelector } from 'react-redux';
 import { MyContext } from '../../App';
-
+import { useFocusEffect } from '@react-navigation/native';
 function IngredientSale(props) {
     const { navigation, route, nav } = props
     const { listdata, shop, listuser } = useContext(MyContext);
     const [listRecommend, setListRecommend] = useState([])
     const user = useSelector((state) => state.CurentUser);
-    useEffect(() => {
-        const getRecommendIng = async () => {
-            var haveData=false;
-            try {
-                if (user) {
-                    const url = `http://192.168.137.1:5000/recommend?idUser=${user.uid}`;
-                    console.log(url);
-                    await fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            if(data.length<4){
-                                haveData==false
-                            }else{
-                                haveData==true
-                            }
-                            setListRecommend(listdata.filter((item) => data.includes(item.id.trim())));
-                        });
-                }
-            } catch (error) {
-                console.error(error);
-            } 
-            return haveData;
-        };
+    // useEffect(() => {
+    //     const getRecommendIng = async () => {
+    //         var haveData=false;
+    //         try {
+    //             if (user) {
+    //                 const url = `http://192.168.137.1:5000/recommend?idUser=${user.uid}`;
+    //                 console.log(url);
+    //                 await fetch(url)
+    //                     .then(response => response.json())
+    //                     .then(data => {
+    //                         if(data.length<4){
+    //                             haveData==false
+    //                         }else{
+    //                             haveData==true
+    //                         }
+    //                         setListRecommend(listdata.filter((item) => data.includes(item.id.trim())));
+    //                     });
+    //             }
+    //         } catch (error) {
+    //             console.error(error);
+    //         } 
+    //         return haveData;
+    //     };
         
-        if (listRecommend.length < 1) {
-            const have= getRecommendIng();
-            if(have==false){
-                getDataSale()
-            }
-        }
-    }, [listRecommend]);
+    //     if (listRecommend.length < 1) {
+    //         const have= getRecommendIng();
+    //         if(have==false){
+    //             getDataSale()
+    //         }
+    //     }
+    // }, [listRecommend]);
     const getDataSale = async () => {
         // setLoading(true)
         const q = query(collection(db, "THUCPHAM"),
@@ -62,7 +62,41 @@ function IngredientSale(props) {
 
     };
     
+    useFocusEffect(
+        useCallback(() => {
+            const getRecommendIng = async () => {
+                var haveData=false;
+                try {
+                    if (user) {
+                        const url = `http://192.168.137.1:5000/recommend?idUser=${user.uid}`;
+                        console.log(url);
+                        await fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                if(data.length<4){
+                                    haveData==false
+                                }else{
+                                    haveData==true
+                                }
+                                setListRecommend(listdata.filter((item) => data.includes(item.id.trim())));
+                            });
+                    }
+                } catch (error) {
+                    console.error(error);
+                } 
+                return haveData;
+            };
+        
+            if (listRecommend.length < 1) {
+                const have= getRecommendIng();
+                if(have==false){
+                    getDataSale()
+                }
+            }
+        }, [listRecommend]),
+    );
 
+    
     const DATA = [
         {
             id: '002',
@@ -96,9 +130,9 @@ function IngredientSale(props) {
 
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10, marginHorizontal: 10 }}>
-                <Text style={styles.textHeader}>Hot Sale</Text>
+                <Text style={styles.textHeader}>Dành cho bạn</Text>
                 <Pressable>
-                    <Text>View All</Text>
+                    <Text>Tất cả</Text>
                 </Pressable>
             </View>
             {listRecommend.length > 0 ?
