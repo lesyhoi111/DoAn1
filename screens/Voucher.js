@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, SafeAreaView, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Color from '../src/Color'
-import { collection, query, documentId, getDocs, doc, where } from "firebase/firestore";
+import { collection, query, documentId, getDocs, doc, where, addDoc } from "firebase/firestore";
 import { db } from '../firebase/index'
 import Lottie from 'lottie-react-native';
 import { Dimensions } from 'react-native';
@@ -27,8 +27,7 @@ function Voucher(props) {
     setIsloading(true);
     const dataFb = user.magiamgiadadung;
     const listid = Object.keys(dataFb);
-    console.log(dataFb)
-    console.log(listid)
+    //console.log(dataFb)
     try {
       console.log("getvou")
       const CollectionRef = collection(db, "MAGIAMGIA");
@@ -39,7 +38,7 @@ function Voucher(props) {
         ...doc.data()
       }));
       setTimeout(() => {
-        setListVou(result.filter((item) => { console.log(item.id); return listid.includes(item.id.trim()) }))
+        setListVou(result.filter((item) => { return listid.map(id=>id.trim().includes(item.id.trim()))}))
         setIsloading(false)
       }, 1000)
     } catch (error) {
@@ -52,7 +51,7 @@ function Voucher(props) {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.btnBack}
-          onPress={() => goBack()}>
+          onPress={()=>goBack()}>
           <Icon name="arrow-left" style={styles.iconBack} />
         </TouchableOpacity>
         <Text style={styles.header_login}>Phiếu giảm giá</Text>

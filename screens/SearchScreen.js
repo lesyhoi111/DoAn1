@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList, Image } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Alert, KeyboardAvoidingView, ScrollView, FlatList, Image, ToastAndroid } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
 import Search from './components/Search';
@@ -9,12 +9,16 @@ import ItemIngredientSale from './components/ItemIngredientSale';
 import {
     collection,
     db,
-    getDocs,
+    setDoc,
+    doc,
+    getDocs
 } from '../firebase/firebase';
+import { useSelector } from 'react-redux';
 import { flingGestureHandlerProps } from 'react-native-gesture-handler/lib/typescript/handlers/FlingGestureHandler';
 const { width, height } = Dimensions.get('window');
 
 function SearchScreen(props) {
+    const user  = useSelector((state) => state.CurentUser)
     const { navigation } = props
     const [search, setSearch] = useState('')
     const [listdata, setListdata] = useState([])
@@ -59,6 +63,23 @@ function SearchScreen(props) {
         )
     }
     else{
+        const handleAddToCart = async (item) => {
+            const docRef = await setDoc(doc(db, `KHACHHANG/${user.uid}/GIOHANG`, item.id), {
+                image: item.image,
+                soluong: 1,
+                ten: item.ten,
+                giagoc: item.giagoc,
+                giamgia: item.giamgia
+            })
+                .then(ToastAndroid.showWithGravity(
+                    'Đã thêm sản phẩm vào giỏ hàng',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                ))
+                .catch((error) => {
+                    console.log(error)
+                });
+        }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -80,6 +101,7 @@ function SearchScreen(props) {
                         numColumns={2}
                         renderItem={({ item }) =>
                             <ItemIngredientSale item={item} short={false}
+                            onPressCartPlus={() => handleAddToCart(item)}
                                 onPress={() => navigation.navigate('ProductDetail',
                                     {
                                         itemDetail: item,

@@ -49,12 +49,10 @@ function Home(props) {
                 </View>
 
                 <View style={{}}>
-
                     <SliderImage></SliderImage>
-
                 </View>
                 <Search white={false}></Search>
-                <TouchableOpacity style={{ height: 35, width: 330, position: 'absolute', left: 15, top: 213 }} onPress={removeItemFromStorage}>
+                <TouchableOpacity style={{ height: 35, width: 330, position: 'absolute', left: 15, top: 213 }} onPress={() => navigation.navigate('SearchScreen')}>
                 </TouchableOpacity>
                 <IngredientSale key={key} nav={navigation}></IngredientSale>
                 <TapRecipe nav={navigation}></TapRecipe>
