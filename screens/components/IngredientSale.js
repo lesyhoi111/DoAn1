@@ -13,43 +13,43 @@ function IngredientSale(props) {
     const { listdata, shop, listuser } = useContext(MyContext);
     const [listRecommend, setListRecommend] = useState([])
     const user = useSelector((state) => state.CurentUser);
-    useEffect(()=>{
+    useEffect(() => {
         if (listRecommend.length < 1) {
             getRecommendIng()
 
         }
-    },[])
-   
+    }, [])
+
     const getRecommendIng = async () => {
-    try {
-        if (user) {
-            const url = `http://10.45.192.48:5000/recommend?idUser=${user.uid}`;
-            console.log(url);
-            var a=false;
-            await fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if(data.length<4){
-                        console.log("havafalse")
-                        a=false
-                    }else{
-                        console.log("havatue")
-                        a=true
-                    }
-                    console.log('ok')
-                    console.log(data)
-                    
-                    setListRecommend(listdata.filter((item) => data.includes(item.id.trim())));
-                    if(!a){
-                        console.log(a)
-                        getDataSale()
-                    }
-                });
+        try {
+            if (user) {
+                const url = `http://10.45.192.48:5000/recommend?idUser=${user.uid}`;
+                console.log(url);
+                var a = false;
+                await fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length < 4) {
+                            console.log("havafalse")
+                            a = false
+                        } else {
+                            console.log("havatue")
+                            a = true
+                        }
+                        console.log('ok')
+                        console.log(data)
+
+                        setListRecommend(listdata.filter((item) => data.includes(item.id.trim())));
+                        if (!a) {
+                            console.log(a)
+                            getDataSale()
+                        }
+                    });
+            }
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
-    } 
-};
+    };
     const getDataSale = async () => {
         // setLoading(true)
 
@@ -63,12 +63,12 @@ function IngredientSale(props) {
             list.push({ id: doc.id, ...doc.data() })
             console.log('ok 1')
             console.log(doc.data())
-            
+
         });
         setTimeout(() => {
             console.log('aaaaaaaaaaaa')
-            setListRecommend(list,...listRecommend)
-            
+            setListRecommend(list, ...listRecommend)
+
         }, 500);
 
     };
@@ -105,6 +105,7 @@ function IngredientSale(props) {
 
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10, marginHorizontal: 10 }}>
+                <Text style={styles.textHeader}>Dành cho bạn</Text>
                 <Text style={styles.textHeader}>Dành cho bạn</Text>
                 <Pressable>
                     <Text>Xem tất cả</Text>
